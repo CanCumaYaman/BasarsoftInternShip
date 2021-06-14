@@ -6,7 +6,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Bing Maps</title>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <script src="https://cdn.polyfill.io/v3/polyfill.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL,TextDecoder"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
     <style>
         .map {
             height: 400px;
@@ -19,25 +26,44 @@
             padding: 7px;
         }
 
-            .layer-select option:hover {
-                background-color: black;
-                color: wheat;
-            }
+        .popover-body {
+            min-width: 276px;
+        }
     </style>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
-    <title>Bing Maps</title>
+
+
 
 </head>
 <body>
     <div id="map" class="map"></div>
+    <div style="display: none;">
+        <!-- Clickable label for Vienna -->
+        <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
+        <div id="marker" title="Marker"></div>
+        <!-- Popup -->
+        <div id="popup" title="Welcome to OpenLayers"></div>
+
+    </div>
+
     <select id="layer-select" class="layer-select">
-        <option value="Aerial">Aerial</option>
+
         <option value="AerialWithLabelsOnDemand" selected>Aerial with labels</option>
-        <option value="RoadOnDemand">Road</option>
-        <option value="CanvasDark">Road dark</option>
-        <option value="OrdnanceSurvey">Ordnance Survey</option>
+
     </select>
+    <form class="form-inline">
+        <label for="type">Geometry type: &nbsp;</label>
+        <select class="form-control mr-2 mb-2 mt-2" id="type">
+            <option value="Point">Point</option>
+            <option value="LineString">LineString</option>
+            <option value="Polygon">Polygon</option>
+            <option value="Circle">Circle</option>
+            <option value="None">None</option>
+        </select>
+        <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
+    </form>
+
     <script>
+
         var TileLayer = ol.layer.Tile;
         var OSM = ol.source.OSM;
         var VectorSource = ol.source.Vector;
@@ -46,55 +72,102 @@
         var Fill = ol.style.Fill;
         var Stroke = ol.style.Stroke;
         var CircleStyle = ol.style.Circle;
-        var Map = ol.Map;
         var View = ol.View;
         var Modify = ol.interaction.Modify;
         var Draw = ol.interaction.Draw;
         var Snap = ol.interaction.Snap;
-        var styles = [
-            'RoadOnDemand',
-            'Aerial',
-            'AerialWithLabelsOnDemand',
-            'CanvasDark',
-            'OrdnanceSurvey'];
-        var layers = [];
-        var i, ii;
-        for (i = 0, ii = styles.length; i < ii; ++i) {
-            layers.push(
-                new TileLayer({
-                    visible: false,
-                    preload: Infinity,
-                    source: new ol.source.BingMaps({
-                        key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
-                        imagerySet: styles[i],
-                        projection: 'EPSG:3857'
-                        // use maxZoom 19 to see stretched tiles instead of the BingMaps
-                        // "no photos at this zoom level" tiles
+        var Overlay = ol.Overlay;
+        var toStringHDMS = ol.coordinate.toStringHDMS;
+        var fromLonLat = ol.proj.fromLonLat;
+        var toLonLat = ol.proj.toLonLat;
 
-                    })
-                })
-            );
-        }
-        var map = new Map({
-            layers: layers,
+        var raster = new TileLayer({
+            
+            preload: Infinity,
+            source: new ol.source.BingMaps({
+                key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
+                imagerySet: 'AerialWithLabelsOnDemand',
+                projection: 'EPSG:3857'
+                // use maxZoom 19 to see stretched tiles instead of the BingMaps
+                // "no photos at this zoom level" tiles
+
+            })
+        });
+        var source = new VectorSource({ wrapX: false });
+
+        var vector = new VectorLayer({
+            source: source,
+            
+        });
+        
+      
+        var map = new ol.Map({
+            layers: [
+                raster, vector
+            ],
             target: 'map',
             view: new View({
-                center: ol.proj.fromLonLat([34.9744, 39.0128]),
+                center: fromLonLat([34.9744, 39.0128]),
                 zoom: 6,
 
             })
         });
 
-        var select = document.getElementById('layer-select');
-        function onChange() {
-            var style = select.value;
-            for (var i = 0, ii = layers.length; i < ii; ++i) {
-                layers[i].setVisible(styles[i] === style);
+        var typeSelect = document.getElementById('type');
+
+        var draw; // global so we can remove it later
+        function addInteraction() {
+            var value = typeSelect.value;
+            if (value !== 'None') {
+                draw = new Draw({
+                    source: source,
+                    type: typeSelect.value,
+                });
+             
+               
+                map.addInteraction(draw);
+                
             }
         }
-        select.addEventListener('change', onChange);
-        onChange();
+      
+        /**
+         * Handle change event.
+         */
+        typeSelect.onchange = function () {
+            map.removeInteraction(draw);
+            addInteraction();
+        };
 
+        document.getElementById('undo').addEventListener('click', function () {
+            draw.removeLastPoint();
+            
+        });
+       /*
+      
+        var popup = new Overlay({
+            element: document.getElementById('popup'),
+        });
+        map.addOverlay(popup);
+
+        map.on('click', function (evt) {
+            var element = popup.getElement();
+            var coordinate = evt.feature;
+            
+            var hdms = toStringHDMS(toLonLat(coordinate));
+
+            $(element).popover('dispose');
+            popup.setPosition(coordinate);
+            $(element).popover({
+                container: element,
+                placement: 'top',
+                animation: false,
+                html: true,
+                content: '<p>The location you clicked was:</p><code>' + hdms + '</code>',
+            });
+            $(element).popover('show');
+        });
+        */
     </script>
+
 </body>
 </html>
