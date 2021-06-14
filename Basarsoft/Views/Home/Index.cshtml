@@ -2,7 +2,99 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
+    <style>
+        .map {
+            height: 400px;
+            width: 100%;
+        }
+
+        .layer-select {
+            margin-top: 10px;
+            border: 1px solid black;
+            padding: 7px;
+        }
+
+            .layer-select option:hover {
+                background-color: black;
+                color: wheat;
+            }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/build/ol.js"></script>
+    <title>Bing Maps</title>
+
+</head>
+<body>
+    <div id="map" class="map"></div>
+    <select id="layer-select" class="layer-select">
+        <option value="Aerial">Aerial</option>
+        <option value="AerialWithLabelsOnDemand" selected>Aerial with labels</option>
+        <option value="RoadOnDemand">Road</option>
+        <option value="CanvasDark">Road dark</option>
+        <option value="OrdnanceSurvey">Ordnance Survey</option>
+    </select>
+    <script>
+        var TileLayer = ol.layer.Tile;
+        var OSM = ol.source.OSM;
+        var VectorSource = ol.source.Vector;
+        var VectorLayer = ol.layer.Vector;
+        var Style = ol.style.Style;
+        var Fill = ol.style.Fill;
+        var Stroke = ol.style.Stroke;
+        var CircleStyle = ol.style.Circle;
+        var Map = ol.Map;
+        var View = ol.View;
+        var Modify = ol.interaction.Modify;
+        var Draw = ol.interaction.Draw;
+        var Snap = ol.interaction.Snap;
+        var styles = [
+            'RoadOnDemand',
+            'Aerial',
+            'AerialWithLabelsOnDemand',
+            'CanvasDark',
+            'OrdnanceSurvey'];
+        var layers = [];
+        var i, ii;
+        for (i = 0, ii = styles.length; i < ii; ++i) {
+            layers.push(
+                new TileLayer({
+                    visible: false,
+                    preload: Infinity,
+                    source: new ol.source.BingMaps({
+                        key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
+                        imagerySet: styles[i],
+                        projection: 'EPSG:3857'
+                        // use maxZoom 19 to see stretched tiles instead of the BingMaps
+                        // "no photos at this zoom level" tiles
+
+                    })
+                })
+            );
+        }
+        var map = new Map({
+            layers: layers,
+            target: 'map',
+            view: new View({
+                center: ol.proj.fromLonLat([34.9744, 39.0128]),
+                zoom: 6,
+
+            })
+        });
+
+        var select = document.getElementById('layer-select');
+        function onChange() {
+            var style = select.value;
+            for (var i = 0, ii = layers.length; i < ii; ++i) {
+                layers[i].setVisible(styles[i] === style);
+            }
+        }
+        select.addEventListener('change', onChange);
+        onChange();
+
+    </script>
+</body>
+</html>
