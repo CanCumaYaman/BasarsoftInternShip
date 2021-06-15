@@ -36,20 +36,18 @@
 </head>
 <body>
     <div id="map" class="map"></div>
+    
     <div style="display: none;">
-        <!-- Clickable label for Vienna -->
-        <a class="overlay" id="vienna" target="_blank" href="http://en.wikipedia.org/wiki/Vienna">Vienna</a>
-        <div id="marker" title="Marker"></div>
-        <!-- Popup -->
-        <div id="popup" title="Welcome to OpenLayers"></div>
-
+        <div id="popup" title="Welcome to OpenLayers">
+        </div>
     </div>
-
+    <!--
     <select id="layer-select" class="layer-select">
 
         <option value="AerialWithLabelsOnDemand" selected>Aerial with labels</option>
 
     </select>
+        -->
     <form class="form-inline">
         <label for="type">Geometry type: &nbsp;</label>
         <select class="form-control mr-2 mb-2 mt-2" id="type">
@@ -63,7 +61,7 @@
     </form>
 
     <script>
-
+        "use strict";
         var TileLayer = ol.layer.Tile;
         var OSM = ol.source.OSM;
         var VectorSource = ol.source.Vector;
@@ -82,14 +80,12 @@
         var toLonLat = ol.proj.toLonLat;
 
         var raster = new TileLayer({
-            
+
             preload: Infinity,
             source: new ol.source.BingMaps({
                 key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
                 imagerySet: 'AerialWithLabelsOnDemand',
                 projection: 'EPSG:3857'
-                // use maxZoom 19 to see stretched tiles instead of the BingMaps
-                // "no photos at this zoom level" tiles
 
             })
         });
@@ -97,10 +93,25 @@
 
         var vector = new VectorLayer({
             source: source,
-            
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+
         });
-        
-      
+
+
         var map = new ol.Map({
             layers: [
                 raster, vector
@@ -119,17 +130,61 @@
         function addInteraction() {
             var value = typeSelect.value;
             if (value !== 'None') {
-                draw = new Draw({
+                var geometryFunction, maxPoints;
+                if (value === 'Square') {
+                    value = 'Circle';
+                    geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
+                } else if (value === 'Box') {
+                    value = 'LineString';
+                    maxPoints = 2;
+                    geometryFunction = function (coordinates, geometry) {
+                        if (!geometry) {
+                            geometry = new ol.geom.Polygon(null);
+                        }
+                        var start = coordinates[0];
+                        var end = coordinates[1];
+                        geometry.setCoordinates([
+                            [start, [start[0], end[1]], end, [end[0], start[1]], start]
+                        ]);
+                        return geometry;
+                    };
+                }
+                draw = new ol.interaction.Draw({
                     source: source,
-                    type: typeSelect.value,
+                    type: (value),
+                    geometryFunction: geometryFunction,
+                    maxPoints: maxPoints
                 });
-             
-               
+                draw.on('drawend', function (e) {
+
+
+                    var popup = new Overlay({
+                        element: document.getElementById('popup'),
+                    });
+                    map.addOverlay(popup);
+
+                    var element = popup.getElement();
+                    var coordinate = e.feature.getGeometry().getCoordinates();
+
+                    var hdms = toStringHDMS(toLonLat(coordinate));
+
+                    $(element).popover('dispose');
+                    popup.setPosition(coordinate);
+                    $(element).popover({
+                        container: element,
+                        placement: 'top',
+                        animation: false,
+                        html: true,
+                        content: '<p>The location you clicked was:</p><code>' + hdms + '</code>',
+                    });
+                    $(element).popover('show');
+
+
+                })
                 map.addInteraction(draw);
-                
             }
         }
-      
+
         /**
          * Handle change event.
          */
@@ -138,12 +193,9 @@
             addInteraction();
         };
 
-        document.getElementById('undo').addEventListener('click', function () {
-            draw.removeLastPoint();
-            
-        });
-       /*
-      
+        addInteraction();
+
+        /*
         var popup = new Overlay({
             element: document.getElementById('popup'),
         });
@@ -152,7 +204,7 @@
         map.on('click', function (evt) {
             var element = popup.getElement();
             var coordinate = evt.feature;
-            
+
             var hdms = toStringHDMS(toLonLat(coordinate));
 
             $(element).popover('dispose');
@@ -171,3 +223,7 @@
 
 </body>
 </html>
+
+
+
+
