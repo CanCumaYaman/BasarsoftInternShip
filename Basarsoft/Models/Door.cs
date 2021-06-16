@@ -9,8 +9,9 @@ namespace Basarsoft.Models
     {
         public int Id { get; set; }
         public int NeighborhoodNumber { get; set; }
-        public int DoorNumber { get; set; }
-        public NetTopologySuite.Geometries.Point Coordinates { get; set; }
-  
+        public string DoorNumber { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
+
     }
 }

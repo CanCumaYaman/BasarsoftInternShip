@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Bing Maps</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/jspanel4@4.11.1/dist/jspanel.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.5.0/css/ol.css" type="text/css">
     <script src="https://cdn.polyfill.io/v3/polyfill.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL,TextDecoder"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -35,12 +35,10 @@
 
 </head>
 <body>
+    <a href="javascript:ActiveKapi();">Kapı Ekle</a>
     <div id="map" class="map"></div>
-    
-    <div style="display: none;">
-        <div id="popup" title="Welcome to OpenLayers">
-        </div>
-    </div>
+
+
     <!--
     <select id="layer-select" class="layer-select">
 
@@ -59,27 +57,16 @@
         </select>
         <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
     </form>
-
+    <script src="https://cdn.jsdelivr.net/npm/jspanel4@4.11.1/dist/jspanel.js"></script>
+  
     <script>
-        "use strict";
-        var TileLayer = ol.layer.Tile;
-        var OSM = ol.source.OSM;
-        var VectorSource = ol.source.Vector;
-        var VectorLayer = ol.layer.Vector;
-        var Style = ol.style.Style;
-        var Fill = ol.style.Fill;
-        var Stroke = ol.style.Stroke;
-        var CircleStyle = ol.style.Circle;
-        var View = ol.View;
-        var Modify = ol.interaction.Modify;
-        var Draw = ol.interaction.Draw;
-        var Snap = ol.interaction.Snap;
-        var Overlay = ol.Overlay;
-        var toStringHDMS = ol.coordinate.toStringHDMS;
-        var fromLonLat = ol.proj.fromLonLat;
-        var toLonLat = ol.proj.toLonLat;
+        $(window).on('load', function () {
+            ListAllPoints();
+        });
 
-        var raster = new TileLayer({
+
+      
+        var raster = new ol.layer.Tile({
 
             preload: Infinity,
             source: new ol.source.BingMaps({
@@ -89,137 +76,164 @@
 
             })
         });
-        var source = new VectorSource({ wrapX: false });
 
-        var vector = new VectorLayer({
-            source: source,
-            style: new ol.style.Style({
-                fill: new ol.style.Fill({
-                    color: 'rgba(255, 255, 255, 0.2)'
-                }),
-                stroke: new ol.style.Stroke({
-                    color: '#ffcc33',
-                    width: 2
-                }),
-                image: new ol.style.Circle({
-                    radius: 7,
-                    fill: new ol.style.Fill({
-                        color: '#ffcc33'
-                    })
-                })
-            })
+        var source = new ol.source.Vector({ wrapX: false });
 
+        var vector = new ol.layer.Vector({
+            source: source
         });
 
-
+        var kapi_layer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
         var map = new ol.Map({
-            layers: [
-                raster, vector
-            ],
+            layers: [raster, vector, kapi_layer],
             target: 'map',
-            view: new View({
-                center: fromLonLat([34.9744, 39.0128]),
+            view: new ol.View({
+                center: ol.proj.fromLonLat([34.9744, 39.0128]),
                 zoom: 6,
+                projection: "EPSG:3857"
 
             })
+
         });
+        //buraya kadar olan kodların neden yazıldığını, ne işe yaradığını önceki yazımda anlatmıştım.
+        var kapi;
+        function addKapiInteraction() {
+            kapi = new ol.interaction.Draw({
+                source: source,
+                type: 'Point'
+            });
 
-        var typeSelect = document.getElementById('type');
+            map.addInteraction(kapi);
+            kapi.setActive(false);
 
-        var draw; // global so we can remove it later
-        function addInteraction() {
-            var value = typeSelect.value;
-            if (value !== 'None') {
-                var geometryFunction, maxPoints;
-                if (value === 'Square') {
-                    value = 'Circle';
-                    geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
-                } else if (value === 'Box') {
-                    value = 'LineString';
-                    maxPoints = 2;
-                    geometryFunction = function (coordinates, geometry) {
-                        if (!geometry) {
-                            geometry = new ol.geom.Polygon(null);
-                        }
-                        var start = coordinates[0];
-                        var end = coordinates[1];
-                        geometry.setCoordinates([
-                            [start, [start[0], end[1]], end, [end[0], start[1]], start]
-                        ]);
-                        return geometry;
-                    };
-                }
-                draw = new ol.interaction.Draw({
-                    source: source,
-                    type: (value),
-                    geometryFunction: geometryFunction,
-                    maxPoints: maxPoints
-                });
-                draw.on('drawend', function (e) {
-
-
-                    var popup = new Overlay({
-                        element: document.getElementById('popup'),
-                    });
-                    map.addOverlay(popup);
-
-                    var element = popup.getElement();
-                    var coordinate = e.feature.getGeometry().getCoordinates();
-
-                    var hdms = toStringHDMS(toLonLat(coordinate));
-
-                    $(element).popover('dispose');
-                    popup.setPosition(coordinate);
-                    $(element).popover({
-                        container: element,
-                        placement: 'top',
-                        animation: false,
-                        html: true,
-                        content: '<p>The location you clicked was:</p><code>' + hdms + '</code>',
-                    });
-                    $(element).popover('show');
-
-
-                })
-                map.addInteraction(draw);
-            }
         }
 
-        /**
-         * Handle change event.
-         */
-        typeSelect.onchange = function () {
-            map.removeInteraction(draw);
-            addInteraction();
+        function ActiveKapi() {
+            kapi.setActive(true);
+        }
+
+        addKapiInteraction();
+
+        kapi.on('drawend', function (e) {
+            //point atıldıktan sonra yapılacak işler bu scope de yer almalı
+            var currentFeature = e.feature;
+
+            var _coords = currentFeature.getGeometry().getCoordinates();
+            kapi.setActive(false);
+
+            jsPanel.create({
+                id: "kapi_ekle_panel",
+                theme: 'success',
+                headerTitle: 'kapı ekle',
+                position: 'center-top 0 58',
+                contentSize: '300 250',
+                content: 'No: <input id="kapi_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="kapi_kaydet" class="btn btn-success">Ekle</button>',
+                callback: function () {
+                    this.content.style.padding = '20px';
+                }
+            });
+            document.getElementById('kapi_kaydet').onclick = function () {
+
+                var _no = $('#kapi_no').val();
+
+                if (_no.length < 1) {
+
+                    alert("Kapı Numarası Girmediniz");
+
+                    return;
+                }
+
+                //kapının kordinatlarını x ve y değişkenlerine attım
+                var _data = {
+                    x: _coords[0].toString().replace('.', ','),
+                    y: _coords[1].toString().replace('.', ','),
+                    no: _no
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Door/SavePoint",
+                    dataType: 'json',
+                    data: _data,
+                    success: function (message) {
+                        alert("Başarıyla Eklendi");
+
+                        kapi.setActive(false);
+                    },
+
+                    error: function () {
+                        alert("Hata Oluştu");
+                    },
+                    onbeforeclose: function () {
+                        return onbeforeclose();
+                    },
+                });
+            }
+        });
+
+        function ListAllPoints() {
+
+            $.ajax({
+                type: "GET",
+                url: "/Door/List",
+                dataType: 'json',
+                success: function (response) {
+
+                    var _features = [];
+
+                    for (var i = 0; i < response.length; i++) {
+
+                        //her bir pointin x,y koordinatlarını aldım.
+
+                        var _point = response[i];
+                        var _id = _point.Id
+                        var _geo = new ol.geom.Point([_point.x, _point.y]);
+
+                        var featurething = new ol.Feature({
+                            name: "Door",
+                            geometry: _geo,
+
+                        });
+
+                        featurething.setId(_id)
+
+                        //feature oluşutup buna noktaları atadım ve style verdim
+
+                        var _style = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                fill: new ol.style.Fill({
+                                    color: 'rgba(0,0,255,0.3)'
+                                }),
+                                stroke: new ol.style.Stroke({
+                                    color: '#8000ff'
+                                }),
+                                radius: 10
+                            }),
+                        });
+
+                        featurething.setStyle(_style);
+
+                        _features.push(featurething);
+                    }
+                    //oluşturduğum style ı feature a set ettım ve featuring nesnemi de  boş olan _features listesine attım.
+                    //layer ve source olayını daha önce vurgulamıstım yazdıgım ve elde ettıgım feature harita kaynağına (source) atılmazsa
+                    //dataları map üstünde göremeyiz
+
+                    var _pointSource = kapi_layer.getSource();
+
+                    _pointSource.addFeatures(_features);
+                },
+
+                error: function () {
+                    alert("upsss");
+                },
+
+            });
         };
 
-        addInteraction();
-
-        /*
-        var popup = new Overlay({
-            element: document.getElementById('popup'),
-        });
-        map.addOverlay(popup);
-
-        map.on('click', function (evt) {
-            var element = popup.getElement();
-            var coordinate = evt.feature;
-
-            var hdms = toStringHDMS(toLonLat(coordinate));
-
-            $(element).popover('dispose');
-            popup.setPosition(coordinate);
-            $(element).popover({
-                container: element,
-                placement: 'top',
-                animation: false,
-                html: true,
-                content: '<p>The location you clicked was:</p><code>' + hdms + '</code>',
-            });
-            $(element).popover('show');
-        });
-        */
     </script>
+
 
 </body>
 </html>

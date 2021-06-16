@@ -20,6 +20,7 @@ namespace Basarsoft.Controllers
 
         public IActionResult Index()
         {
+           
             return View();
         }
 

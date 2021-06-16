@@ -18,25 +18,27 @@ namespace Basarsoft.Business.Concrete
             _neighborhoodDal = neighborhoodDal ?? throw new ArgumentNullException(nameof(neighborhoodDal));
         }
 
-        public async Task<List<Neighborhood>> GetAllAsync(Expression<Func<Neighborhood, bool>> filter = null)
+        public List<Neighborhood> GetAll(Expression<Func<Neighborhood, bool>> filter = null)
         {
-            return await _neighborhoodDal.GetAllAsync(filter);
+            return  _neighborhoodDal.GetAll(filter);
         }
-        public async Task AddAsync(Neighborhood entity)
+        
+        public void Add(Neighborhood entity)
         {
-          await _neighborhoodDal.AddAsync(entity);
+           _neighborhoodDal.Add(entity);
         }
+        
 
-        public async Task DeleteAsync(Neighborhood entity)
+        public void Delete(Neighborhood entity)
         {
-            await _neighborhoodDal.DeleteAsync(entity);
+             _neighborhoodDal.Delete(entity);
         }
 
        
 
-        public async Task UpdateAsync(Neighborhood entity)
+        public void Update(Neighborhood entity)
         {
-           await _neighborhoodDal.UpdateAsync(entity);
+           _neighborhoodDal.Update(entity);
         }
     }
 }

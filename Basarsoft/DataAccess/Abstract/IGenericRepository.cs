@@ -8,10 +8,10 @@ namespace Basarsoft.DataAccess.Abstract
 {
    public interface IGenericRepository<T> where T: new()
     {
-        Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null);
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task DeleteAsync(T entity);
+        List<T> GetAll(Expression<Func<T, bool>> filter = null);
+        void Add(T entity);
+        void Update(T entity);
+        void Delete(T entity);
 
     }
 }

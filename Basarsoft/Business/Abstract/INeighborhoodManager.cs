@@ -9,9 +9,9 @@ namespace Basarsoft.Business.Abstract
 {
    public interface INeighborhoodManager
     {
-        Task<List<Neighborhood>> GetAllAsync(Expression<Func<Neighborhood, bool>> filter = null);
-        Task AddAsync(Neighborhood entity);
-        Task UpdateAsync(Neighborhood entity);
-        Task DeleteAsync(Neighborhood entity);
+        List<Neighborhood> GetAll(Expression<Func<Neighborhood, bool>> filter = null);
+        void Add(Neighborhood entity);
+        void Update(Neighborhood entity);
+        void Delete(Neighborhood entity);
     }
 }

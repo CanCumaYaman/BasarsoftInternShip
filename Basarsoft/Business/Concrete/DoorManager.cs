@@ -18,25 +18,25 @@ namespace Basarsoft.Business.Concrete
             _doorDal = doorDal ?? throw new ArgumentNullException(nameof(doorDal));
         }
 
-        public async Task<List<Door>> GetAllAsync(Expression<Func<Door, bool>> filter = null)
+        public List<Door> GetAll(Expression<Func<Door, bool>> filter = null)
         {
-            return await _doorDal.GetAllAsync(filter);
+            return _doorDal.GetAll(filter);
         }
 
 
-        public async Task AddAsync(Door entity)
+        public void Add(Door entity)
         {
-           await _doorDal.AddAsync(entity);
+            _doorDal.Add(entity);
         }
 
-        public async Task DeleteAsync(Door entity)
+        public void Delete(Door entity)
         {
-            await _doorDal.DeleteAsync(entity);
+            _doorDal.Delete(entity);
         }
 
-        public async Task UpdateAsync(Door entity)
+        public void Update(Door entity)
         {
-            await _doorDal.UpdateAsync(entity);
+             _doorDal.Update(entity);
         }
     }
 }

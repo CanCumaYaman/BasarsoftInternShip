@@ -9,9 +9,9 @@ namespace Basarsoft.Business.Abstract
 {
    public interface IDoorManager
     {
-        Task<List<Door>> GetAllAsync(Expression<Func<Door, bool>> filter = null);
-        Task AddAsync(Door entity);
-        Task UpdateAsync(Door entity);
-        Task DeleteAsync(Door entity);
+        List<Door> GetAll(Expression<Func<Door, bool>> filter = null);
+        void Add(Door entity);
+        void Update(Door entity);
+        void Delete(Door entity);
     }
 }

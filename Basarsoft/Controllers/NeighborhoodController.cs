@@ -8,17 +8,12 @@ namespace Basarsoft.Controllers
 {
     public class NeighborhoodController : Controller
     {
-       private readonly IGenericRepository
+       
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpPost]
-
-        public IActionResult GetAll()
-        {
-
-        }
+      
     }
 }

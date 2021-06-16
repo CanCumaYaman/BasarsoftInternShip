@@ -20,26 +20,26 @@ namespace Basarsoft.DataAccess.Concrete.Base
             _dbSet = _context.Set<T>();
         }
 
-        public async  Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null)
+        public List<T> GetAll(Expression<Func<T, bool>> filter = null)
         {
-            return   filter == null ? await _dbSet.ToListAsync() : await _dbSet.Where(filter).ToListAsync();
+            return   filter == null ?  _dbSet.ToList() :  _dbSet.Where(filter).ToList();
         }
         
-        public async Task AddAsync(T entity)
+        public void Add(T entity)
         {
             _dbSet.Add(entity);
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
         }
 
-        public async Task UpdateAsync(T entity)
+        public void Update(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
+             _context.SaveChanges();
         }
-        public async Task DeleteAsync(T entity)
+        public void Delete(T entity)
         {
             _dbSet.Remove(entity);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
        

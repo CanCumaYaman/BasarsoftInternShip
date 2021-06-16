@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Basarsoft.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Basarsoft.DataContext
         {
 
         }
+        public DbSet<Door> Doors { get; set; }
     }
 }

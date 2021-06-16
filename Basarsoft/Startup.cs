@@ -1,3 +1,7 @@
+using Basarsoft.Business.Abstract;
+using Basarsoft.Business.Concrete;
+using Basarsoft.DataAccess.Abstract;
+using Basarsoft.DataAccess.Concrete;
 using Basarsoft.DataContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,6 +28,10 @@ namespace Basarsoft
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IDoorManager, DoorManager>();
+            services.AddTransient<IDoorDal, DoorDal>();
+            services.AddTransient<INeighborhoodManager, NeighborhoodManager>();
+            services.AddTransient<INeighborhoodDal, NeighborhoodDal>();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
