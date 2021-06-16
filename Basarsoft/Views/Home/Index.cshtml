@@ -35,7 +35,7 @@
 
 </head>
 <body>
-    <a href="javascript:ActiveKapi();">Kapı Ekle</a>
+    <a href="javascript:ActiveDoor();" class="btn btn-info mb-3">Add Door</a>
     <div id="map" class="map"></div>
 
 
@@ -58,121 +58,7 @@
         <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
     </form>
     <script src="https://cdn.jsdelivr.net/npm/jspanel4@4.11.1/dist/jspanel.js"></script>
-  
-    <script>
-        $(window).on('load', function () {
-            ListAllPoints();
-        });
-
-
-      
-        var raster = new ol.layer.Tile({
-
-            preload: Infinity,
-            source: new ol.source.BingMaps({
-                key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
-                imagerySet: 'AerialWithLabelsOnDemand',
-                projection: 'EPSG:3857'
-
-            })
-        });
-
-        var source = new ol.source.Vector({ wrapX: false });
-
-        var vector = new ol.layer.Vector({
-            source: source
-        });
-
-        var kapi_layer = new ol.layer.Vector({
-            source: new ol.source.Vector()
-        });
-        var map = new ol.Map({
-            layers: [raster, vector, kapi_layer],
-            target: 'map',
-            view: new ol.View({
-                center: ol.proj.fromLonLat([34.9744, 39.0128]),
-                zoom: 6,
-                projection: "EPSG:3857"
-
-            })
-
-        });
-        //buraya kadar olan kodların neden yazıldığını, ne işe yaradığını önceki yazımda anlatmıştım.
-        var kapi;
-        function addKapiInteraction() {
-            kapi = new ol.interaction.Draw({
-                source: source,
-                type: 'Point'
-            });
-
-            map.addInteraction(kapi);
-            kapi.setActive(false);
-
-        }
-
-        function ActiveKapi() {
-            kapi.setActive(true);
-        }
-
-        addKapiInteraction();
-
-        kapi.on('drawend', function (e) {
-            //point atıldıktan sonra yapılacak işler bu scope de yer almalı
-            var currentFeature = e.feature;
-
-            var _coords = currentFeature.getGeometry().getCoordinates();
-            kapi.setActive(false);
-
-            jsPanel.create({
-                id: "kapi_ekle_panel",
-                theme: 'success',
-                headerTitle: 'kapı ekle',
-                position: 'center-top 0 58',
-                contentSize: '300 250',
-                content: 'No: <input id="kapi_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="kapi_kaydet" class="btn btn-success">Ekle</button>',
-                callback: function () {
-                    this.content.style.padding = '20px';
-                }
-            });
-            document.getElementById('kapi_kaydet').onclick = function () {
-
-                var _no = $('#kapi_no').val();
-
-                if (_no.length < 1) {
-
-                    alert("Kapı Numarası Girmediniz");
-
-                    return;
-                }
-
-                //kapının kordinatlarını x ve y değişkenlerine attım
-                var _data = {
-                    x: _coords[0].toString().replace('.', ','),
-                    y: _coords[1].toString().replace('.', ','),
-                    no: _no
-                };
-                $.ajax({
-                    type: "POST",
-                    url: "/Door/SavePoint",
-                    dataType: 'json',
-                    data: _data,
-                    success: function (message) {
-                        alert("Başarıyla Eklendi");
-
-                        kapi.setActive(false);
-                    },
-
-                    error: function () {
-                        alert("Hata Oluştu");
-                    },
-                    onbeforeclose: function () {
-                        return onbeforeclose();
-                    },
-                });
-            }
-        });
-
-        function ListAllPoints() {
+    <script>function ListAllPoints() {
 
             $.ajax({
                 type: "GET",
@@ -220,7 +106,7 @@
                     //layer ve source olayını daha önce vurgulamıstım yazdıgım ve elde ettıgım feature harita kaynağına (source) atılmazsa
                     //dataları map üstünde göremeyiz
 
-                    var _pointSource = kapi_layer.getSource();
+                    var _pointSource = door_layer.getSource();
 
                     _pointSource.addFeatures(_features);
                 },
@@ -231,6 +117,117 @@
 
             });
         };
+    </script>
+    <script>
+        $(window).on('load', function () {
+            ListAllPoints();
+        });
+        var raster = new ol.layer.Tile({
+            preload: Infinity,
+            source: new ol.source.BingMaps({
+                key: 'Av_kDzzEbj4a86y7tlCRPp3H5OtG1JiZXLANyJXnGzJGI5A57GYgBcHm7lCPtvmZ',
+                imagerySet: 'AerialWithLabelsOnDemand',
+                projection: 'EPSG:3857'
+
+            })
+        });
+
+        var source = new ol.source.Vector({ wrapX: false });
+
+        var vector = new ol.layer.Vector({
+            source: source
+        });
+
+        var door_layer = new ol.layer.Vector({
+            source: new ol.source.Vector()
+        });
+        var map = new ol.Map({
+            layers: [raster, vector, door_layer],
+            target: 'map',
+            view: new ol.View({
+                center: ol.proj.fromLonLat([34.9744, 39.0128]),
+                zoom: 6,
+                projection: "EPSG:3857"
+
+            })
+
+        });
+ 
+        var door;
+        function addDoorInteraction() {
+            door = new ol.interaction.Draw({
+                source: source,
+                type: 'Point'
+            });
+
+            map.addInteraction(door);
+            door.setActive(false);
+
+        }
+
+        function ActiveDoor() {
+            door.setActive(true);
+        }
+
+        addDoorInteraction();
+
+        door.on('drawend', function (e) {
+            
+            var currentFeature = e.feature;
+
+            var _coords = currentFeature.getGeometry().getCoordinates();
+            door.setActive(false);
+
+            jsPanel.create({
+                id: "door_add_panel",
+                theme: 'success',
+                headerTitle: 'Add door',
+                position: 'center-top 0 58',
+                contentSize: '300 250',
+                content: 'No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
+                callback: function () {
+                    this.content.style.padding = '20px';
+                }
+            });
+            document.getElementById('door_add').onclick = function () {
+
+                var _no = $('#door_no').val();
+
+                if (_no.length < 1) {
+
+                    alert("Please enter door no");
+
+                    return;
+                }
+
+                //kapının kordinatlarını x ve y değişkenlerine attım
+                var _data = {
+                    x: _coords[0].toString().replace('.', ','),
+                    y: _coords[1].toString().replace('.', ','),
+                    no: _no
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Door/SavePoint",
+                    dataType: 'json',
+                    data: _data,
+                    success: function (message) {
+                        alert("Successfully added");
+
+                        door.setActive(false);
+                    },
+
+                    error: function () {
+                        alert("Something went wrong");
+                    },
+                    onbeforeclose: function () {
+                        return onbeforeclose();
+                    },
+                });
+            }
+        });
+
+        
 
     </script>
 
