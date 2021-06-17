@@ -22,6 +22,14 @@ namespace Basarsoft.Controllers
             return View();
         }
 
+        [HttpGet]
+
+        public JsonResult List()
+        {
+            var _coords = _neighborhoodManager.GetAll();
+            return Json(_coords);
+        }
+
         [HttpPost]
         public JsonResult SaveNeighborhood(Neighborhood neighborhood, string result, string no)
         {

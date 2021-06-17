@@ -1,5 +1,6 @@
 ﻿$(window).on('load', function () {
     ListAllPoints();
+    ListAllPolygons();
 });
 var raster = new ol.layer.Tile({
     preload: Infinity,

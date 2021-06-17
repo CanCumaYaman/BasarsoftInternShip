@@ -84,3 +84,69 @@ add_neigh.on('drawend', function (e) {
         });
     }
 });
+
+function ListAllPolygons() {
+    $.ajax({
+        type: "GET",
+        url: "/Neighborhood/List",
+        dataType: 'json',
+        success: function (response) {
+
+            var features = [];
+            var coordList = [];
+            var idList = [];
+
+            for (var j = 0; j < response.length; j++) {
+                var coords = [];
+                var data = response[j];
+                var code = data.neighborhoodCode;
+                var splittedCoords = data.coordinates.split('*');
+                var neigh_name = data.neighborhoodName;
+                for (var i = 0; i < splittedCoords.length; i++) {
+
+                    var neighborhood = splittedCoords[i];
+                    var sp = neighborhood.split(',');
+                    coords.push([sp[0], sp[1]]);
+                }
+
+                coordList.push(coords);
+                //artık id de alıyor
+                idList.push(code);
+            }
+            var style = new ol.style.Style({
+                image: new ol.style.Circle({ // add this
+                    stroke: new ol.style.Stroke({
+                        color: '#FFA500'
+                    }),
+                    radius: 20
+                }),
+            });
+            // db den cızılmıs  olan her nesneyı gostermemı saglıyor
+            for (var i = 0; i < coordList.length; i++) {
+
+                var feature = new ol.Feature({
+                    name: "Mahalle",
+                    geometry: new ol.geom.Polygon([coordList[i]])
+                });
+                //FEATURİNG DEGISKENINDE SADECE COORDLIST VAR AMA ID YOK
+                var featureID = idList[i]
+                feature.setId(featureID);
+                feature.set("adi", "123");
+                //feature e set ile id atadım
+
+                feature.setStyle(style);
+                features.push(feature);
+            }
+            var neighSource = neigh_layer.getSource();
+
+            neighSource.addFeatures(features);
+
+            //mahalle.setActive(false);
+        },
+
+        error: function () {
+            alert("upsss");
+        },
+
+    });
+}
