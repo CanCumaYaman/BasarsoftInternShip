@@ -1,6 +1,7 @@
 ﻿var door;
 function addDoorInteraction() {
     door = new ol.interaction.Draw({
+       
         source: source,
         type: 'Point'
     });
@@ -19,8 +20,8 @@ addDoorInteraction();
 door.on('drawend', function (e) {
 
     var currentFeature = e.feature;
-
-    var _coords = currentFeature.getGeometry().getCoordinates();
+    
+    var coords = currentFeature.getGeometry().getCoordinates();
     door.setActive(false);
 
     jsPanel.create({
@@ -36,20 +37,20 @@ door.on('drawend', function (e) {
     });
     document.getElementById('door_add').onclick = function () {
 
-        var _no = $('#door_no').val();
+        var no = $('#door_no').val();
 
-        if (_no.length < 1) {
+        if (no.length < 1) {
 
             alert("Please enter door no");
 
             return;
         }
 
-        //kapının kordinatlarını x ve y değişkenlerine attım
+     
         var _data = {
-            x: _coords[0].toString().replace('.', ','),
-            y: _coords[1].toString().replace('.', ','),
-            no: _no
+            x: coords[0].toString().replace('.', ','),
+            y: coords[1].toString().replace('.', ','),
+            no: no
         };
         $.ajax({
             type: "POST",
@@ -80,54 +81,123 @@ function ListAllPoints() {
         dataType: 'json',
         success: function (response) {
 
-            var _features = [];
+            var features = [];
 
             for (var i = 0; i < response.length; i++) {
+                var point = response[i];
+                var id = point.id;
+                var geo = new ol.geom.Point([point.x, point.y]);
 
-                //her bir pointin x,y koordinatlarını aldım.
-
-                var _point = response[i];
-                var _id = _point.Id
-                var _geo = new ol.geom.Point([_point.x, _point.y]);
-
-                var featurething = new ol.Feature({
+                var feature = new ol.Feature({ 
                     name: "Door",
-                    geometry: _geo,
+                    geometry: geo,
 
                 });
+                feature.add
 
-                featurething.setId(_id)
+                feature.setId(id);
 
-                //feature oluşutup buna noktaları atadım ve style verdim
-
-                var _style = new ol.style.Style({
+                var style = new ol.style.Style({
                     image: new ol.style.Circle({
                         fill: new ol.style.Fill({
-                            color: 'rgba(0,0,255,0.3)'
+                            color: 'rgba(255,0,0,0.2)',
                         }),
                         stroke: new ol.style.Stroke({
-                            color: '#8000ff'
+                            color: 'red',
+                            width: 1
                         }),
                         radius: 10
                     }),
                 });
 
-                featurething.setStyle(_style);
+                feature.setStyle(style);
 
-                _features.push(featurething);
+                features.push(feature);
             }
-            //oluşturduğum style ı feature a set ettım ve featuring nesnemi de  boş olan _features listesine attım.
-            //layer ve source olayını daha önce vurgulamıstım yazdıgım ve elde ettıgım feature harita kaynağına (source) atılmazsa
-            //dataları map üstünde göremeyiz
+          
 
-            var _pointSource = door_layer.getSource();
+            var pointSource = door_layer.getSource();
 
-            _pointSource.addFeatures(_features);
+            pointSource.addFeatures(features);
         },
 
         error: function () {
-            alert("upsss");
+            alert("Something went wrong");
         },
 
     });
 };
+
+var info;
+
+function addInfoInteraction() {
+
+    //seçili işleme göre yeni bir geometrik çizi  oluşturuyor.
+    //Biz point seçtireceğimiz için type ı ona göre verdik.
+
+    info = new ol.interaction.Draw({
+        source: source,
+        type: 'Point'
+    });
+
+    map.addInteraction(info);
+
+   info.setActive(false);
+    //point seçildikten hemen sonra mouse ucunda gelen seçim tool u kapattık
+
+}
+function ActiveInfo() {
+    info.setActive(true);
+}
+
+
+addInfoInteraction();
+
+info.on('drawend', function (e) {
+    map.on("click", function (event) {
+
+        info.setActive(false);
+
+        map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
+            
+            var _type = feature.get('name');
+            var _id = feature.getId();
+          
+
+            if (_id) {
+                $.ajax({
+                    url: '/Door/GetInfo',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: _type,
+                        id: _id,
+                    },
+                    success: function (resp) {
+                        var content;
+
+                        if (_type == 'Door') {
+                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + '"/>';
+                            
+                        }
+                        jsPanel.create({
+                            id: "show_info",
+                            theme: 'success',
+                            headerTitle: 'Door Information',
+                            position: 'center-top 0 58',
+                            contentSize: '300 250',
+                            content: content,
+                            callback: function () {
+                               
+                                _type = "";
+                                _id = 0;
+                                this.content.style.padding = '20px';
+                            },
+                        });
+
+                    }
+                })
+            }
+        });
+    });
+})

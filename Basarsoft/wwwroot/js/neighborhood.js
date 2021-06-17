@@ -110,38 +110,45 @@ function ListAllPolygons() {
                 }
 
                 coordList.push(coords);
-                //artık id de alıyor
+               
                 idList.push(code);
             }
-            var style = new ol.style.Style({
-                image: new ol.style.Circle({ // add this
-                    stroke: new ol.style.Stroke({
-                        color: '#FFA500'
-                    }),
-                    radius: 20
+          
+            var polygon = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'blue',
+                    width: 1,
+                    
                 }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 255, 0.1)',
+                }),
+
             });
-            // db den cızılmıs  olan her nesneyı gostermemı saglıyor
+           
+        
+
+            
+           
             for (var i = 0; i < coordList.length; i++) {
 
                 var feature = new ol.Feature({
-                    name: "Mahalle",
+                    name: "Neighborhood",
                     geometry: new ol.geom.Polygon([coordList[i]])
                 });
-                //FEATURİNG DEGISKENINDE SADECE COORDLIST VAR AMA ID YOK
+               
                 var featureID = idList[i]
                 feature.setId(featureID);
                 feature.set("adi", "123");
-                //feature e set ile id atadım
+               
 
-                feature.setStyle(style);
+                feature.setStyle(polygon);
                 features.push(feature);
             }
             var neighSource = neigh_layer.getSource();
 
             neighSource.addFeatures(features);
 
-            //mahalle.setActive(false);
         },
 
         error: function () {

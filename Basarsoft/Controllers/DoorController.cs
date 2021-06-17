@@ -46,6 +46,34 @@ namespace Basarsoft.Controllers
             return Json("");
         }
 
+        [HttpPost]
+
+        public JsonResult GetInfo(int? id,string type)
+        {
+            if (id == null)
+            {
+                return Json(new { hata = "ID Bilgisi Gönderilmedi" });
+            }
+
+            if (type == "Door")
+            {
+                Door door = _doorManager.GetAll(p => p.Id == id).SingleOrDefault();
+
+                if (door == null)
+                {
+                    return Json(new { hata = "Bilgi Bulunamadı" });
+                }
+                else
+                {
+                    return Json(new { info = door });
+                }
+
+            }
+
+
+            return Json(new { info = "" });
+        }
+
 
     }
 }
