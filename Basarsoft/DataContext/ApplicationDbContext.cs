@@ -14,5 +14,6 @@ namespace Basarsoft.DataContext
 
         }
         public DbSet<Door> Doors { get; set; }
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
     }
 }

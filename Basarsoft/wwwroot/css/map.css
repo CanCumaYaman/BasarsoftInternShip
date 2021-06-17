@@ -1,0 +1,14 @@
+﻿.map {
+    height: 400px;
+    width: 100%;
+}
+
+.layer-select {
+    margin-top: 10px;
+    border: 1px solid black;
+    padding: 7px;
+}
+
+.popover-body {
+    min-width: 276px;
+}
