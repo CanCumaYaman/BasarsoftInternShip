@@ -23,18 +23,22 @@ door.on('drawend', function (e) {
     
     var coords = currentFeature.getGeometry().getCoordinates();
     door.setActive(false);
-
+ 
     jsPanel.create({
         id: "door_add_panel",
         theme: 'success',
         headerTitle: 'Add door',
         position: 'center-top 0 58',
-        contentSize: '300 250',
-        content: 'No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
+        contentSize: '320 300',
+        content: '<h5>X: <span id="xcord"></span></h5> </br> <h5>Y: <span id="ycord"></span></h5> </br> No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
     });
+
+    document.getElementById("xcord").innerHTML = coords[0].toString().replace('.', ',');
+    document.getElementById("ycord").innerHTML = coords[1].toString().replace('.', ',');
+
     document.getElementById('door_add').onclick = function () {
 
         var no = $('#door_no').val();
@@ -46,12 +50,12 @@ door.on('drawend', function (e) {
             return;
         }
 
-     
         var _data = {
             x: coords[0].toString().replace('.', ','),
             y: coords[1].toString().replace('.', ','),
             no: no
         };
+      
         $.ajax({
             type: "POST",
             url: "/Door/SavePoint",
@@ -132,9 +136,6 @@ var info;
 
 function addInfoInteraction() {
 
-    //seçili işleme göre yeni bir geometrik çizi  oluşturuyor.
-    //Biz point seçtireceğimiz için type ı ona göre verdik.
-
     info = new ol.interaction.Draw({
         source: source,
         type: 'Point'
@@ -143,7 +144,6 @@ function addInfoInteraction() {
     map.addInteraction(info);
 
    info.setActive(false);
-    //point seçildikten hemen sonra mouse ucunda gelen seçim tool u kapattık
 
 }
 function ActiveInfo() {

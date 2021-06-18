@@ -23,20 +23,21 @@ add_neigh.on('drawend', function (e) {
 
     var _coords = currentFeature.getGeometry().getCoordinates();
     add_neigh.setActive(false);
-
+   
     jsPanel.create({
         id: "neigh_add_panel",
         theme: 'success',
         headerTitle: 'Add Neighborhood',
         position: 'center-top 0 58',
         contentSize: '300 250',
-        content: 'No: <input id="neigh_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
+        content: '<h5><span id="coord"></span></h5>Neighborhood Name: <input id="neigh_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
     });
+    document.getElementById("coord").innerHTML = _coords;
     document.getElementById('neigh_add').onclick = function () {
-
+       
         var _no = $('#neigh_no').val();
 
         if (_no.length < 1) {
@@ -152,7 +153,7 @@ function ListAllPolygons() {
         },
 
         error: function () {
-            alert("upsss");
+            alert("Something went wrong");
         },
 
     });
