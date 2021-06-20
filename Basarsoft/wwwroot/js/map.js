@@ -36,3 +36,93 @@ var map = new ol.Map({
     })
 
 });
+
+
+var info;
+
+function addInfoInteraction() {
+
+    info = new ol.interaction.Draw({
+        source: source,
+        type: 'Point'
+    });
+
+    map.addInteraction(info);
+
+    info.setActive(false);
+
+}
+function ActiveInfo() {
+    info.setActive(true);
+}
+
+
+addInfoInteraction();
+
+info.on('drawend', function (e) {
+    map.on("click", function (event) {
+
+        info.setActive(false);
+
+        map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
+
+            var _type = feature.get('name');
+            var _id = feature.getId();
+            var type = feature.get('type');
+
+
+            if (type == 'Neighborhood') {
+                jsPanel.create({
+                    id: "show_n_info",
+                    theme: 'success',
+                    headerTitle: 'Neighborhood information',
+                    position: 'center-top 0 58',
+                    contentSize: '300 250',
+                    content: 'Neighborhood Name : <input id="yeni_no" type="text"  value=" ' + _type + '"/>',
+                    callback: function () {
+
+                        _type = "";
+                        _id = 0;
+                        this.content.style.padding = '20px';
+                    },
+                });
+            } else {
+                if (_id) {
+                    $.ajax({
+                        url: '/Door/GetInfo',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            type: _type,
+                            id: _id,
+                        },
+                        success: function (resp) {
+                            var content;
+
+                            if (_type == 'Door') {
+                                content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + '"/>';
+
+                            }
+                            jsPanel.create({
+                                id: "show_info",
+                                theme: 'success',
+                                headerTitle: 'Door Information',
+                                position: 'center-top 0 58',
+                                contentSize: '300 250',
+                                content: content,
+                                callback: function () {
+
+                                    _type = "";
+                                    _id = 0;
+                                    this.content.style.padding = '20px';
+                                },
+                            });
+
+                        }
+                    })
+                }
+            }
+
+        });
+    });
+})

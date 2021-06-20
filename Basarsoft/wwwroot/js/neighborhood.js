@@ -127,14 +127,12 @@ function ListAllPolygons() {
 
             });
            
-        
-
-            
            
             for (var i = 0; i < coordList.length; i++) {
 
                 var feature = new ol.Feature({
-                    name: "Neighborhood",
+                    name: neigh_name,
+                    type:'Neighborhood',
                     geometry: new ol.geom.Polygon([coordList[i]])
                 });
                

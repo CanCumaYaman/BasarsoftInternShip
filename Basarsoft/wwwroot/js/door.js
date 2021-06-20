@@ -20,6 +20,7 @@ addDoorInteraction();
 door.on('drawend', function (e) {
 
     var currentFeature = e.feature;
+    console.log(currentFeature.get('name'));
     
     var coords = currentFeature.getGeometry().getCoordinates();
     door.setActive(false);
@@ -132,72 +133,3 @@ function ListAllPoints() {
     });
 };
 
-var info;
-
-function addInfoInteraction() {
-
-    info = new ol.interaction.Draw({
-        source: source,
-        type: 'Point'
-    });
-
-    map.addInteraction(info);
-
-   info.setActive(false);
-
-}
-function ActiveInfo() {
-    info.setActive(true);
-}
-
-
-addInfoInteraction();
-
-info.on('drawend', function (e) {
-    map.on("click", function (event) {
-
-        info.setActive(false);
-
-        map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
-            
-            var _type = feature.get('name');
-            var _id = feature.getId();
-          
-
-            if (_id) {
-                $.ajax({
-                    url: '/Door/GetInfo',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        type: _type,
-                        id: _id,
-                    },
-                    success: function (resp) {
-                        var content;
-
-                        if (_type == 'Door') {
-                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + '"/>';
-                            
-                        }
-                        jsPanel.create({
-                            id: "show_info",
-                            theme: 'success',
-                            headerTitle: 'Door Information',
-                            position: 'center-top 0 58',
-                            contentSize: '300 250',
-                            content: content,
-                            callback: function () {
-                               
-                                _type = "";
-                                _id = 0;
-                                this.content.style.padding = '20px';
-                            },
-                        });
-
-                    }
-                })
-            }
-        });
-    });
-})
