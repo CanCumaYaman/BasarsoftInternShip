@@ -103,6 +103,14 @@ function ListAllPolygons() {
                 var code = data.neighborhoodCode;
                 var splittedCoords = data.coordinates.split('*');
                 var neigh_name = data.neighborhoodName;
+
+                var name = data.neighborhoodName;
+
+                $('#neigh_list').append($('<option>',
+                    {
+                        value: data.neighborhoodCode,
+                        text: name
+                    }));
                 for (var i = 0; i < splittedCoords.length; i++) {
 
                     var neighborhood = splittedCoords[i];

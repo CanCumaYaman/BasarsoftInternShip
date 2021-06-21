@@ -84,9 +84,10 @@ info.on('drawend', function (e) {
                         var content;
 
                         if (_type == 'Door') {
-                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/><br></br>Neighborhood Name: <input id="yeni_no" type="text"  value=" ' + resp.info.neighborhoodName + ' "/>';
+                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/><br></br>Neighborhood Name: <input id="info_neigh" type="text"  value=" ' + resp.info.neighborhoodName + ' "/>';
 
                         }
+                        jsPanel.
                         jsPanel.create({
                             id: "show_info",
                             theme: 'success',
@@ -107,7 +108,7 @@ info.on('drawend', function (e) {
                 
             }
            
-           else {
+           else 
                 if (type == 'Neighborhood') {
                     jsPanel.create({
                         id: "show_n_info",
@@ -115,17 +116,19 @@ info.on('drawend', function (e) {
                         headerTitle: 'Neighborhood information',
                         position: 'center-top 0 58',
                         contentSize: '300 250',
-                        content: 'Neighborhood Name : <input id="yeni_no" type="text"  value=" ' + _type + '"/>',
+                        content: 'Neighborhood Name : <input id="neigh_name" type="text"  value=" ' + _type + '"/>',
                         callback: function () {
-
-                            type = "";
-                            _id = 0;
                             this.content.style.padding = '20px';
                         },
                     });
                 }
-            }
+            
 
         });
     });
 })
+
+
+
+
+

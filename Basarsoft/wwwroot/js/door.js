@@ -104,7 +104,12 @@ function ListAllPoints() {
                 var point = response[i];
                 var id = point.id;
                 var geo = new ol.geom.Point([point.x, point.y]);
-
+                var name = point.doorNumber;
+                $('#door_list').append($('<option>',
+                    {
+                        value: id,
+                        text: name
+                    }));
                 var feature = new ol.Feature({ 
                     name: "Door",
                     geometry: geo,
@@ -145,4 +150,42 @@ function ListAllPoints() {
 
     });
 };
+var filteredNeigh;
+var filteredDoor;
+$('#door_list').on('change', function () {
+    var value = $(this).val();
+    filteredDoor = value;
+
+})
+$('#neigh_list').on('change', function () {
+    var value = $(this).val();
+    filteredNeigh = value;
+})
+
+function Filter() {
+    var _data = {
+        neighborhoodCode: filteredNeigh,
+        doorNumber:filteredDoor
+    }
+   
+     $.ajax({
+        type: 'GET',
+        url: '/Door/Filter', 
+        data: _data,
+        success: function (response) {
+            var map = new ol.Map({
+                layers: [raster, vector, door_layer, neigh_layer],
+                target: 'map',
+                view: new ol.View({
+                    center: ol.proj.fromLonLat[response.x, response.y],
+                    zoom: 18,
+                }),
+            });
+         
+            
+        }
+
+    });
+   
+}
 

@@ -21,7 +21,9 @@
     <button class="btn btn-success mb-3" onclick="ActiveNeigh();">Add Neighborhood</button>
     <button class="btn btn-success mb-3" onclick="ActiveInfo();">Get Information</button>
     <button class="btn btn-success mb-3" onclick="ActiveEdit();">Edit</button>
-    <div id="map" class="map"></div>
+
+
+    <div id="map" class="map mb-4"></div>
     <!--
     <form class="form-inline">
         <label for="type">Geometry type &nbsp;</label>
@@ -51,6 +53,16 @@
         <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
     </form>
         -->
+    
+        <select class="form-select mb-2" id="neigh_list" aria-label="Default select example" style="width:250px;">
+            <option selected>Select Neighborhood</option>
+            
+        </select>
+        <select class="form-select" id="door_list" aria-label="Default select example" style="width:250px;">
+            <option selected>Select door number</option>
+           
+        </select>
+   <button class="btn btn-success mt-2" onclick="Filter();">Filter</button>
     <script src="~/js/jspanel.js"></script>
     <script src="~/js/map.js"></script>
     <script src="~/js/door.js"></script>

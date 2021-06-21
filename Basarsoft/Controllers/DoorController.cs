@@ -34,6 +34,15 @@ namespace Basarsoft.Controllers
             return Json(_coords);
         }
 
+        [HttpGet]
+
+        public JsonResult Filter(int neighborhoodCode,int doorNumber )
+        {
+            var _coords = _doorManager.GetAll(p => p.Id == doorNumber && p.NeighborhoodNumber == neighborhoodCode).SingleOrDefault();
+
+            return Json(_coords);
+        }
+
         [HttpPost]
         public JsonResult SavePoint(Door door, double x, double y, string no,int neighborhoodNumber)
         {
@@ -71,7 +80,8 @@ namespace Basarsoft.Controllers
 
 
             return Json(new { info = "" });
-              }
+             
+        }
 
 
     }
