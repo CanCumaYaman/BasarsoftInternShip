@@ -17,10 +17,20 @@ function ActiveDoor() {
 
 addDoorInteraction();
 
-door.on('drawend', function (e) {
+door.on('drawend',async function (e) {
+    var neighResult;
+    var neighId;
+   
+   await  map.on("click", function (event) {
+        map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
 
+            neighResult = feature.get('name');
+            neighId = feature.getId();
+           
+        });
+    });
     var currentFeature = e.feature;
-    console.log(currentFeature.get('name'));
+   
     
     var coords = currentFeature.getGeometry().getCoordinates();
     door.setActive(false);
@@ -31,7 +41,7 @@ door.on('drawend', function (e) {
         headerTitle: 'Add door',
         position: 'center-top 0 58',
         contentSize: '320 300',
-        content: '<h5>X: <span id="xcord"></span></h5> </br> <h5>Y: <span id="ycord"></span></h5> </br> No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
+        content: '<h5>X: <span id="xcord"></span></h5> </br> <h5>Y: <span id="ycord"></span></h5 ><h5>Neighborhood: <span id="neigh"></span></h5> </br> No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
@@ -39,6 +49,7 @@ door.on('drawend', function (e) {
 
     document.getElementById("xcord").innerHTML = coords[0].toString().replace('.', ',');
     document.getElementById("ycord").innerHTML = coords[1].toString().replace('.', ',');
+    document.getElementById("neigh").innerHTML = neighResult;
 
     document.getElementById('door_add').onclick = function () {
 
@@ -54,7 +65,8 @@ door.on('drawend', function (e) {
         var _data = {
             x: coords[0].toString().replace('.', ','),
             y: coords[1].toString().replace('.', ','),
-            no: no
+            no: no,
+            neighborhoodNumber:neighId
         };
       
         $.ajax({
@@ -96,6 +108,7 @@ function ListAllPoints() {
                 var feature = new ol.Feature({ 
                     name: "Door",
                     geometry: geo,
+                    isDoor: true
 
                 });
                 feature.add

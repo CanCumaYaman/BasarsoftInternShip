@@ -32,14 +32,14 @@ namespace Basarsoft.Controllers
         }
 
         [HttpPost]
-        public JsonResult SavePoint(Door door, double x, double y, string no)
+        public JsonResult SavePoint(Door door, double x, double y, string no,int neighborhoodNumber)
         {
             if (ModelState.IsValid)
             {
                 door.x = x;
                 door.y = y;
                 door.DoorNumber = no;
-                door.NeighborhoodNumber = 13;
+                door.NeighborhoodNumber = neighborhoodNumber;
                 _doorManager.Add(door);
                 
             }

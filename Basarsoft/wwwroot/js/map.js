@@ -71,55 +71,58 @@ info.on('drawend', function (e) {
             var type = feature.get('type');
 
 
-            if (type == 'Neighborhood') {
-                jsPanel.create({
-                    id: "show_n_info",
-                    theme: 'success',
-                    headerTitle: 'Neighborhood information',
-                    position: 'center-top 0 58',
-                    contentSize: '300 250',
-                    content: 'Neighborhood Name : <input id="yeni_no" type="text"  value=" ' + _type + '"/>',
-                    callback: function () {
-
-                        _type = "";
-                        _id = 0;
-                        this.content.style.padding = '20px';
+            if (_type == 'Door') {
+                $.ajax({
+                    url: '/Door/GetInfo',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: _type,
+                        id: _id,
                     },
-                });
-            } else {
-                if (_id) {
-                    $.ajax({
-                        url: '/Door/GetInfo',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            type: _type,
-                            id: _id,
-                        },
-                        success: function (resp) {
-                            var content;
+                    success: function (resp) {
+                        var content;
 
-                            if (_type == 'Door') {
-                                content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + '"/>';
-
-                            }
-                            jsPanel.create({
-                                id: "show_info",
-                                theme: 'success',
-                                headerTitle: 'Door Information',
-                                position: 'center-top 0 58',
-                                contentSize: '300 250',
-                                content: content,
-                                callback: function () {
-
-                                    _type = "";
-                                    _id = 0;
-                                    this.content.style.padding = '20px';
-                                },
-                            });
+                        if (_type == 'Door') {
+                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/>';
 
                         }
-                    })
+                        jsPanel.create({
+                            id: "show_info",
+                            theme: 'success',
+                            headerTitle: 'Door Information',
+                            position: 'center-top 0 58',
+                            contentSize: '300 250',
+                            content: content,
+                            callback: function () {
+
+                                _type = "";
+                                _id = 0;
+                                this.content.style.padding = '20px';
+                            },
+                        });
+
+                    }
+                })
+                
+            }
+           
+           else {
+                if (type == 'Neighborhood') {
+                    jsPanel.create({
+                        id: "show_n_info",
+                        theme: 'success',
+                        headerTitle: 'Neighborhood information',
+                        position: 'center-top 0 58',
+                        contentSize: '300 250',
+                        content: 'Neighborhood Name : <input id="yeni_no" type="text"  value=" ' + _type + '"/>',
+                        callback: function () {
+
+                            type = "";
+                            _id = 0;
+                            this.content.style.padding = '20px';
+                        },
+                    });
                 }
             }
 

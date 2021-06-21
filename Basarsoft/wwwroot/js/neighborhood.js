@@ -113,7 +113,7 @@ function ListAllPolygons() {
                 coordList.push(coords);
                
                 idList.push(code);
-            }
+           
           
             var polygon = new ol.style.Style({
                 stroke: new ol.style.Stroke({
@@ -143,6 +143,7 @@ function ListAllPolygons() {
 
                 feature.setStyle(polygon);
                 features.push(feature);
+            }
             }
             var neighSource = neigh_layer.getSource();
 
