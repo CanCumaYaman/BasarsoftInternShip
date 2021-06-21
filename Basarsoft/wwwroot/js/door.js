@@ -172,17 +172,19 @@ function Filter() {
         type: 'GET',
         url: '/Door/Filter', 
         data: _data,
-        success: function (response) {
-            var map = new ol.Map({
-                layers: [raster, vector, door_layer, neigh_layer],
-                target: 'map',
-                view: new ol.View({
-                    center: ol.proj.fromLonLat[response.x, response.y],
-                    zoom: 18,
-                }),
-            });
-         
+         success: function (response) {
+          
+             map.setView(new ol.View({
+                projection: 'EPSG:3857',
+                center: [response.x, response.y],
+                zoom: 18
+             }));
             
+             
+           
+           
+              
+
         }
 
     });

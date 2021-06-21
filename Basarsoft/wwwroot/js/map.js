@@ -87,7 +87,7 @@ info.on('drawend', function (e) {
                             content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/><br></br>Neighborhood Name: <input id="info_neigh" type="text"  value=" ' + resp.info.neighborhoodName + ' "/>';
 
                         }
-                        jsPanel.
+                        
                         jsPanel.create({
                             id: "show_info",
                             theme: 'success',
