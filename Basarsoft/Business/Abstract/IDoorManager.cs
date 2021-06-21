@@ -1,4 +1,5 @@
-﻿using Basarsoft.Models;
+﻿using Basarsoft.Dtos;
+using Basarsoft.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,6 @@ namespace Basarsoft.Business.Abstract
         void Add(Door entity);
         void Update(Door entity);
         void Delete(Door entity);
+        DoorDto GetDoorById(int id);
     }
 }

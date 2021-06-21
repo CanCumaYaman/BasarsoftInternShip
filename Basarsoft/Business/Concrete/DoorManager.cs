@@ -1,5 +1,6 @@
 ﻿using Basarsoft.Business.Abstract;
 using Basarsoft.DataAccess.Abstract;
+using Basarsoft.Dtos;
 using Basarsoft.Models;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,10 @@ namespace Basarsoft.Business.Concrete
             return _doorDal.GetAll(filter);
         }
 
+        public DoorDto GetDoorById(int id)
+        {
+            return _doorDal.GetDoorById(id);
+        }
 
         public void Add(Door entity)
         {
@@ -38,5 +43,7 @@ namespace Basarsoft.Business.Concrete
         {
              _doorDal.Update(entity);
         }
+
+       
     }
 }

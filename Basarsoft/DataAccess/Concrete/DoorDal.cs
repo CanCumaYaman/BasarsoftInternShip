@@ -1,6 +1,7 @@
 ﻿using Basarsoft.DataAccess.Abstract;
 using Basarsoft.DataAccess.Concrete.Base;
 using Basarsoft.DataContext;
+using Basarsoft.Dtos;
 using Basarsoft.Models;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,21 @@ namespace Basarsoft.DataAccess.Concrete
             _context = context;
         }
 
-      
+        public DoorDto GetDoorById(int id)
+        {
+            var result = from door in _context.Doors
+                         join neigh in _context.Neighborhoods
+                         on door.NeighborhoodNumber equals neigh.NeighborhoodCode
+                         where door.Id == id
+                         select new DoorDto
+                         {
+                             DoorNumber = door.DoorNumber,
+                             NeighborhoodName = neigh.NeighborhoodName,
+                             x = door.x,
+                             y = door.y
+                         };
+            return result.FirstOrDefault();
+
+        }
     }
 }

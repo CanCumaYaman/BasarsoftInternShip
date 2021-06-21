@@ -51,36 +51,27 @@ namespace Basarsoft.Controllers
 
         [HttpPost]
 
-        public JsonResult GetInfo(int? id,string type)
+        public JsonResult GetInfo(int id,string type)
         {
-            if (id == null)
-            {
-                return Json(new { hata = "ID Bilgisi Gönderilmedi" });
-            }
 
             if (type == "Door")
             {
-                Door door = _doorManager.GetAll(p => p.Id == id).SingleOrDefault();
-                var neighborhood = _neighManager.GetAll(p => p.NeighborhoodCode == door.NeighborhoodNumber).SingleOrDefault();
-                DoorDto doorDto = new DoorDto();
-                doorDto.DoorNumber = door.DoorNumber;
-                doorDto.NeighborhoodName = neighborhood.NeighborhoodName;
-                doorDto.x = door.x;
-                doorDto.y = door.y;
-                if (door == null)
+                
+                var result = _doorManager.GetDoorById(id);
+                if (result == null)
                 {
-                    return Json(new { hata = "Bilgi Bulunamadı" });
+                    return Json(new { error = "Door not found" });
                 }
                 else
                 {
-                    return Json(new { info = doorDto });
+                    return Json(new { info = result });
                 }
 
-            }
+               }
 
 
             return Json(new { info = "" });
-        }
+              }
 
 
     }
