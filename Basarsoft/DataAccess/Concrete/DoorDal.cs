@@ -11,9 +11,12 @@ namespace Basarsoft.DataAccess.Concrete
 {
     public class DoorDal:GenericRepositoryBase<Door>,IDoorDal
     {
+        private readonly ApplicationDbContext _context;
         public DoorDal(ApplicationDbContext context) : base(context)
         {
-
+            _context = context;
         }
+
+      
     }
 }

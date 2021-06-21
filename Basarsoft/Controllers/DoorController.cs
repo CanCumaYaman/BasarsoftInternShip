@@ -1,5 +1,6 @@
 ﻿using Basarsoft.Business.Abstract;
 using Basarsoft.DataContext;
+using Basarsoft.Dtos;
 using Basarsoft.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,10 +13,12 @@ namespace Basarsoft.Controllers
     public class DoorController : Controller
     {
         private IDoorManager _doorManager;
+        private INeighborhoodManager _neighManager;
 
-        public DoorController(IDoorManager doorManager)
+        public DoorController(IDoorManager doorManager, INeighborhoodManager neighManager)
         {
             _doorManager = doorManager;
+            _neighManager = neighManager;
         }
 
         public IActionResult Index()
@@ -58,14 +61,19 @@ namespace Basarsoft.Controllers
             if (type == "Door")
             {
                 Door door = _doorManager.GetAll(p => p.Id == id).SingleOrDefault();
-
+                var neighborhood = _neighManager.GetAll(p => p.NeighborhoodCode == door.NeighborhoodNumber).SingleOrDefault();
+                DoorDto doorDto = new DoorDto();
+                doorDto.DoorNumber = door.DoorNumber;
+                doorDto.NeighborhoodName = neighborhood.NeighborhoodName;
+                doorDto.x = door.x;
+                doorDto.y = door.y;
                 if (door == null)
                 {
                     return Json(new { hata = "Bilgi Bulunamadı" });
                 }
                 else
                 {
-                    return Json(new { info = door });
+                    return Json(new { info = doorDto });
                 }
 
             }

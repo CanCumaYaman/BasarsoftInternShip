@@ -84,7 +84,7 @@ info.on('drawend', function (e) {
                         var content;
 
                         if (_type == 'Door') {
-                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/>';
+                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/><br></br>Neighborhood Name: <input id="yeni_no" type="text"  value=" ' + resp.info.neighborhoodName + ' "/>';
 
                         }
                         jsPanel.create({

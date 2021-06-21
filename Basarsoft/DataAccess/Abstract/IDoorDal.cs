@@ -8,5 +8,6 @@ namespace Basarsoft.DataAccess.Abstract
 {
    public  interface IDoorDal:IGenericRepository<Door>
     {
+       
     }
 }
