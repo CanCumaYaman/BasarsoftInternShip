@@ -149,7 +149,7 @@ function ListAllPolygons() {
                 feature.set("adi", "123");
                
 
-                feature.setStyle(polygon);
+               // feature.setStyle(polygon);
                 features.push(feature);
             }
             }
@@ -164,4 +164,84 @@ function ListAllPolygons() {
         },
 
     });
+}
+
+function ActiveEdit() {
+
+    var select = new ol.interaction.Select({
+        wrapX: false
+    });
+    var modify = new ol.interaction.Modify({
+        features: select.getFeatures()
+    });
+    map.addInteraction(select);
+    map.addInteraction(modify);
+
+    modify.on('modifyend', function (e) {
+        var newCoordinates = e.features.getArray()[0].values_.geometry.flatCoordinates
+        var leng = e.features.getArray()[0].values_.geometry.flatCoordinates.length;
+        var neighId = e.features.getArray()[0].getId();
+        var result = "";
+
+        for (j = 0; j < leng; j++) {
+            if (j == leng - 1) {
+                result = result + newCoordinates[j];
+
+            } else if (j % 2 == 0) {
+                result = result + newCoordinates[j] + ",";
+
+            } else {
+                result = result + newCoordinates[j] + "*";
+            }
+        }
+
+        var _data = {
+            result: result,
+            id: neighId
+        }
+
+        var panel1=jsPanel.create({
+            id: "neigh_edit_panel",
+            theme: 'success',
+            headerTitle: 'Neighborhood Edit',
+            position: 'center-top 0 58',
+            contentSize: '370 150',
+          
+            content: '<div class="text-center"><h5>Do you want to save changes?</h5><button style="height:40px;width:60px;" id="neigh_edit" class="btn btn-success">Yes</button><button style="height:40px;width:60px;margin-left:10px;" id="neigh_edit_cancel" class="btn btn-danger">No</button></div>',
+            callback: function () {
+                this.content.style.padding = '20px';
+            }
+        });
+        toastr.options = {
+            "debug": false,
+            "positionClass": "toast-top-center",
+            "onclick": null,
+            "fadeIn": 300,
+            "fadeOut": 1000,
+            "timeOut": 5000,
+            "extendedTimeOut": 1000
+        }
+        document.getElementById("neigh_edit").onclick = function () {
+            panel1.close();
+            $.ajax({
+                type: "POST",
+                url: "/Neighborhood/Update",
+                dataType: 'json',
+                data: _data,
+                success: function (response) {
+                   
+                    toastr.success('Successfully updated');
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+
+                },
+                error: function () {
+                    toastr.success('Something went wrong while updating');
+                }
+            });
+        }
+            
+    });
+   
 }
