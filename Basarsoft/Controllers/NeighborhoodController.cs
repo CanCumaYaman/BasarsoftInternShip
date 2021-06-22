@@ -43,6 +43,17 @@ namespace Basarsoft.Controllers
             return Json("");
         }
 
+        [HttpPost]
+
+        public JsonResult Update( string result, int id)
+        {
+            var updateNeigh = _neighborhoodManager.GetAll(p => p.NeighborhoodCode == id).SingleOrDefault();
+            updateNeigh.Coordinates = result;
+            _neighborhoodManager.Update(updateNeigh);
+            return Json("");
+            
+        }
+
 
     }
 }

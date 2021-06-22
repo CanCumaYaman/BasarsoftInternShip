@@ -173,18 +173,17 @@ function Filter() {
         url: '/Door/Filter', 
         data: _data,
          success: function (response) {
-          
-             map.setView(new ol.View({
-                projection: 'EPSG:3857',
-                center: [response.x, response.y],
-                zoom: 18
-             }));
-            
+             if (response == null) {
+                 alert("No result to show");
+             } else {
+                 map.setView(new ol.View({
+                     projection: 'EPSG:3857',
+                     center: [response.x, response.y],
+                     zoom: 18
+                 }));
+             }
              
-           
-           
-              
-
+            
         }
 
     });
