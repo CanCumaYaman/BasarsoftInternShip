@@ -112,6 +112,7 @@ function ListAllPoints() {
                     }));
                 var feature = new ol.Feature({ 
                     name: "Door",
+
                     geometry: geo,
                     isDoor: true
 
@@ -129,7 +130,8 @@ function ListAllPoints() {
                             color: 'red',
                             width: 1
                         }),
-                        radius: 10
+                        points: 8,
+                        radius:10
                     }),
                 });
 
@@ -167,14 +169,22 @@ function Filter() {
         neighborhoodCode: filteredNeigh,
         doorNumber:filteredDoor
     }
-   
+    toastr.options = {
+        "debug": false,
+        "positionClass": "toast-top-center",
+        "onclick": null,
+        "fadeIn": 300,
+        "fadeOut": 1000,
+        "timeOut": 5000,
+        "extendedTimeOut": 1000
+    }
      $.ajax({
         type: 'GET',
         url: '/Door/Filter', 
         data: _data,
          success: function (response) {
              if (response == null) {
-                 alert("No result to show");
+                 toastr.error("Door not found");
              } else {
                  map.setView(new ol.View({
                      projection: 'EPSG:3857',

@@ -132,8 +132,25 @@ function ListAllPolygons() {
                 fill: new ol.style.Fill({
                     color: 'rgba(0, 0, 255, 0.1)',
                 }),
+                points: 3,
 
             });
+                var polygonn = new ol.style.Style({
+                    
+                        stroke: new ol.style.Stroke({
+                            color: 'blue',
+                            width: 1,
+
+                        }),
+                        fill: new ol.style.Fill({
+                            color: 'rgba(0, 0, 255, 0.1)',
+                        }),
+                        points: 1,
+                        
+                        
+                   
+                });
+
            
            
             for (var i = 0; i < coordList.length; i++) {
@@ -144,12 +161,14 @@ function ListAllPolygons() {
                     geometry: new ol.geom.Polygon([coordList[i]])
                 });
                
-                var featureID = idList[i]
+                var featureID = idList[i];
+                
+
                 feature.setId(featureID);
                 feature.set("adi", "123");
-               
+                
 
-               // feature.setStyle(polygon);
+                feature.setStyle(polygonn);
                 features.push(feature);
             }
             }
@@ -245,3 +264,5 @@ function ActiveEdit() {
     });
    
 }
+
+
