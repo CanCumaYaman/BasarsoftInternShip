@@ -75,13 +75,17 @@ door.on('drawend',async function (e) {
             dataType: 'json',
             data: _data,
             success: function (message) {
-                alert("Successfully added");
+                toastr.success('Successfully added');
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
 
                 door.setActive(false);
             },
 
             error: function () {
-                alert("Something went wrong");
+                toastr.error('Something went wrong');
+               
             },
             onbeforeclose: function () {
                 return onbeforeclose();

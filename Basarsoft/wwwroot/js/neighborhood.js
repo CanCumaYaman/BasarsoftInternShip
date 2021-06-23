@@ -16,6 +16,15 @@ function ActiveNeigh() {
 
 addDaireInteraction();
 
+toastr.options = {
+    "debug": false,
+    "positionClass": "toast-top-center",
+    "onclick": null,
+    "fadeIn": 300,
+    "fadeOut": 1000,
+    "timeOut": 5000,
+    "extendedTimeOut": 1000
+}
 
 add_neigh.on('drawend', function (e) {
 
@@ -35,7 +44,7 @@ add_neigh.on('drawend', function (e) {
             this.content.style.padding = '20px';
         }
     });
-    document.getElementById("coord").innerHTML = _coords;
+    //document.getElementById("coord").innerHTML = _coords;
     document.getElementById('neigh_add').onclick = function () {
        
         var _no = $('#neigh_no').val();
@@ -71,7 +80,10 @@ add_neigh.on('drawend', function (e) {
             dataType: 'json',
             data: _data,
             success: function (message) {
-                alert("Successfully added");
+                toastr.success('Successfully added');
+                setTimeout(function () {
+                    location.reload();
+                }, 2000);
 
                 door.setActive(false);
             },
@@ -123,36 +135,19 @@ function ListAllPolygons() {
                 idList.push(code);
            
           
-            var polygon = new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: 'blue',
-                    width: 1,
+            //var polygon = new ol.style.Style({
+            //    stroke: new ol.style.Stroke({
+            //        color: 'blue',
+            //        width: 1,
                     
-                }),
-                fill: new ol.style.Fill({
-                    color: 'rgba(0, 0, 255, 0.1)',
-                }),
-                points: 3,
+            //    }),
+            //    fill: new ol.style.Fill({
+            //        color: 'rgba(0, 0, 255, 0.1)',
+            //    }),
+            //    points: 3,
 
-            });
-                var polygonn = new ol.style.Style({
-                    
-                        stroke: new ol.style.Stroke({
-                            color: 'blue',
-                            width: 1,
-
-                        }),
-                        fill: new ol.style.Fill({
-                            color: 'rgba(0, 0, 255, 0.1)',
-                        }),
-                        points: 1,
-                        
-                        
-                   
-                });
-
-           
-           
+            //});
+               
             for (var i = 0; i < coordList.length; i++) {
 
                 var feature = new ol.Feature({
@@ -168,7 +163,7 @@ function ListAllPolygons() {
                 feature.set("adi", "123");
                 
 
-                feature.setStyle(polygonn);
+                //feature.setStyle(polygon);
                 features.push(feature);
             }
             }
@@ -188,13 +183,17 @@ function ListAllPolygons() {
 function ActiveEdit() {
 
     var select = new ol.interaction.Select({
-        wrapX: false
+        multi:true,
+        condition: ol.events.condition.click,
+        toggleCondition: ol.events.condition.shiftKeyOnly,  
     });
+  
     var modify = new ol.interaction.Modify({
         features: select.getFeatures()
     });
     map.addInteraction(select);
     map.addInteraction(modify);
+   
 
     modify.on('modifyend', function (e) {
         var newCoordinates = e.features.getArray()[0].values_.geometry.flatCoordinates
