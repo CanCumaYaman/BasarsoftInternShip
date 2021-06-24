@@ -54,6 +54,17 @@ namespace Basarsoft.Controllers
             
         }
 
+        [HttpPut]
+
+        public JsonResult UpdateName(int code,string newName)
+        {
+            var result = _neighborhoodManager.GetAll(p => p.NeighborhoodCode == code).SingleOrDefault();
+            result.NeighborhoodName = newName;
+            _neighborhoodManager.Update(result);
+            return Json("");
+
+        }
+
         [HttpDelete]
 
         public JsonResult Delete(int code)

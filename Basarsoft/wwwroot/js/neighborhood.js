@@ -139,18 +139,18 @@ function ListAllPolygons() {
                 idList.push(code);
            
           
-            //var polygon = new ol.style.Style({
-            //    stroke: new ol.style.Stroke({
-            //        color: 'blue',
-            //        width: 1,
+            var polygon = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: 'blue',
+                    width: 1,
                     
-            //    }),
-            //    fill: new ol.style.Fill({
-            //        color: 'rgba(0, 0, 255, 0.1)',
-            //    }),
-            //    points: 3,
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(0, 0, 255, 0.1)',
+                }),
+                points: 3,
 
-            //});
+            });
                
             for (var i = 0; i < coordList.length; i++) {
 
@@ -169,7 +169,7 @@ function ListAllPolygons() {
                 feature.set("adi", "123");
                 
 
-                //feature.setStyle(polygon);
+                feature.setStyle(polygon);
                 features.push(feature);
             }
             }

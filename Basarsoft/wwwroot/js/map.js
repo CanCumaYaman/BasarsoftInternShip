@@ -149,11 +149,15 @@ info.on('drawend', function (e) {
                         headerTitle: 'Neighborhood information',
                         position: 'center-top 0 58',
                         contentSize: '300 230',
-                      content: 'Neighborhood Name : <input id="neigh_name" class="mb-2" type="text"  value=" ' + _type + '"/></br>Neighborhood Code : <span id="neigh_code"></span></br>Center X: <span id="neigh_center_x"></span><br>Center Y: <span id="neigh_center_y"></span><br><button class="btn btn-info" id="update_neigh" style="margin-right:5px;margin-top:10px;">Save Changes</button><button class="btn btn-danger" id="delete_neigh" style="margin-top:10px;">Delete</button>',
+                      content: 'Neighborhood Name : <input id="neigh_name" class="mb-2" type="text"   value=" ' + _type + '"/></br>Neighborhood Code : <span id="neigh_code"></span></br>Center X: <span id="neigh_center_x"></span><br>Center Y: <span id="neigh_center_y"></span><br><button class="btn btn-info" id="update_neigh" style="margin-right:5px;margin-top:10px;">Save Changes</button><button class="btn btn-danger" id="delete_neigh" style="margin-top:10px;">Delete</button>',
                         callback: function () {
                             this.content.style.padding = '20px';
                         },
                   });
+                    var inputValue;
+                    $("#neigh_name").change(function () {
+                        inputValue = $("#neigh_name").val();
+                    });
                     $("#neigh_code").text(code);
                     $("#neigh_center_x").text(center[0]);
                     $("#neigh_center_y").text(center[1]);
@@ -168,6 +172,28 @@ info.on('drawend', function (e) {
                             success: function (response) {
 
                                 toastr.success('Successfully deleted');
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 2000);
+
+                            },
+                            error: function () {
+                                toastr.error('Something went wrong while deleting');
+                            }
+                        });
+                    });
+                    $("#update_neigh").click(function () {
+                        $.ajax({
+                            type: "PUT",
+                            url: "/Neighborhood/UpdateName",
+                            dataType: 'json',
+                            data: {
+                                code: code,
+                                newName: inputValue
+                            },
+                            success: function (response) {
+
+                                toastr.success('Successfully updated');
                                 setTimeout(function () {
                                     location.reload();
                                 }, 2000);
