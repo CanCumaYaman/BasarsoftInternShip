@@ -20,11 +20,13 @@ addDoorInteraction();
 door.on('drawend',async function (e) {
     var neighResult;
     var neighId;
+    var neighCode;
    
    await  map.on("click", function (event) {
         map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
 
             neighResult = feature.get('name');
+            neighCode = feature.get('code');
             neighId = feature.getId();
            
         });
@@ -41,7 +43,7 @@ door.on('drawend',async function (e) {
         headerTitle: 'Add door',
         position: 'center-top 0 58',
         contentSize: '320 300',
-        content: '<h5>X: <span id="xcord"></span></h5> </br> <h5>Y: <span id="ycord"></span></h5 ><h5>Neighborhood: <span id="neigh"></span></h5> </br> No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
+        content: 'X: <span id="xcord"></span> </br> Y: <span id="ycord"></span><br><br>Neighborhood Name: <span id="neigh"></span><br>Neighborhood Code: <span id="neigh_code"></span> </br> <br>No: <input id="door_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="door_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
@@ -50,6 +52,7 @@ door.on('drawend',async function (e) {
     document.getElementById("xcord").innerHTML = coords[0].toString().replace('.', ',');
     document.getElementById("ycord").innerHTML = coords[1].toString().replace('.', ',');
     document.getElementById("neigh").innerHTML = neighResult;
+    document.getElementById("neigh_code").innerHTML = neighCode;
 
     document.getElementById('door_add').onclick = function () {
 

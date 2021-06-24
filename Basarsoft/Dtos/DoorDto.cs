@@ -9,6 +9,7 @@ namespace Basarsoft.Dtos
     {
         public string DoorNumber { get; set; }
         public string NeighborhoodName { get; set; }
+        public int NeighborhoodNumber { get; set; }
         public double x { get; set; }
         public double y { get; set; }
     }

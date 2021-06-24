@@ -31,6 +31,9 @@ add_neigh.on('drawend', function (e) {
     var currentFeature = e.feature;
 
     var _coords = currentFeature.getGeometry().getCoordinates();
+    var centerOperation = currentFeature.getGeometry().getExtent();
+    var center = ol.extent.getCenter(centerOperation);
+    
     add_neigh.setActive(false);
    
     jsPanel.create({
@@ -39,12 +42,13 @@ add_neigh.on('drawend', function (e) {
         headerTitle: 'Add Neighborhood',
         position: 'center-top 0 58',
         contentSize: '300 250',
-        content: '<h5><span id="coord"></span></h5>Neighborhood Name: <input id="neigh_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
+        content: 'Center X: <span id="neigh_x"></span><br>Center Y: <span id="neigh_y"></span>   Neighborhood Name: <input id="neigh_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
     });
-    //document.getElementById("coord").innerHTML = _coords;
+    $("#neigh_x").text(center[0]);
+    $("#neigh_y").text(center[1]);
     document.getElementById('neigh_add').onclick = function () {
        
         var _no = $('#neigh_no').val();
@@ -115,7 +119,7 @@ function ListAllPolygons() {
                 var code = data.neighborhoodCode;
                 var splittedCoords = data.coordinates.split('*');
                 var neigh_name = data.neighborhoodName;
-
+                var code = data.neighborhoodCode;
                 var name = data.neighborhoodName;
 
                 $('#neigh_list').append($('<option>',
@@ -151,14 +155,16 @@ function ListAllPolygons() {
             for (var i = 0; i < coordList.length; i++) {
 
                 var feature = new ol.Feature({
+                    code: code,
                     name: neigh_name,
                     type:'Neighborhood',
                     geometry: new ol.geom.Polygon([coordList[i]])
                 });
-               
+                let centerOperation = feature.getGeometry().getExtent();
+                let center = ol.extent.getCenter(centerOperation);
                 var featureID = idList[i];
-                
 
+                feature.set("center", center);
                 feature.setId(featureID);
                 feature.set("adi", "123");
                 

@@ -29,7 +29,8 @@ namespace Basarsoft.DataAccess.Concrete
                              DoorNumber = door.DoorNumber,
                              NeighborhoodName = neigh.NeighborhoodName,
                              x = door.x,
-                             y = door.y
+                             y = door.y,
+                             NeighborhoodNumber=neigh.NeighborhoodCode
                          };
             return result.FirstOrDefault();
 
