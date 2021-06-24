@@ -43,7 +43,7 @@ namespace Basarsoft.Controllers
             return Json("");
         }
 
-        [HttpPost]
+        [HttpPut]
 
         public JsonResult Update( string result, int id)
         {
@@ -52,6 +52,14 @@ namespace Basarsoft.Controllers
             _neighborhoodManager.Update(updateNeigh);
             return Json("");
             
+        }
+
+        [HttpDelete]
+
+        public JsonResult Delete(int code)
+        {
+            _neighborhoodManager.Delete(code);
+            return Json("");
         }
 
 

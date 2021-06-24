@@ -34,9 +34,9 @@ namespace Basarsoft.Business.Concrete
             _doorDal.Add(entity);
         }
 
-        public void Delete(Door entity)
+        public void Delete(int id)
         {
-            _doorDal.Delete(entity);
+            _doorDal.Delete(id);
         }
 
         public void Update(Door entity)
@@ -44,6 +44,6 @@ namespace Basarsoft.Business.Concrete
              _doorDal.Update(entity);
         }
 
-       
+      
     }
 }

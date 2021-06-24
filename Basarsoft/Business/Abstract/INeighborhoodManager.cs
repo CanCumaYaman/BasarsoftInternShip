@@ -12,6 +12,6 @@ namespace Basarsoft.Business.Abstract
         List<Neighborhood> GetAll(Expression<Func<Neighborhood, bool>> filter = null);
         void Add(Neighborhood entity);
         void Update(Neighborhood entity);
-        void Delete(Neighborhood entity);
+        void Delete(int id);
     }
 }

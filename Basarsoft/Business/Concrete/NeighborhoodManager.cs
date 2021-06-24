@@ -29,9 +29,9 @@ namespace Basarsoft.Business.Concrete
         }
         
 
-        public void Delete(Neighborhood entity)
+        public void Delete(int id)
         {
-             _neighborhoodDal.Delete(entity);
+             _neighborhoodDal.Delete(id);
         }
 
        

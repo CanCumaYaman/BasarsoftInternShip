@@ -83,6 +83,15 @@ namespace Basarsoft.Controllers
              
         }
 
+        [HttpDelete]
+
+        public JsonResult Delete(int id)
+        {
+            _doorManager.Delete(id);
+            
+            return Json(new { info = "" });
+        }
+
 
     }
 }

@@ -13,7 +13,8 @@ namespace Basarsoft.Business.Abstract
         List<Door> GetAll(Expression<Func<Door, bool>> filter = null);
         void Add(Door entity);
         void Update(Door entity);
-        void Delete(Door entity);
+        void Delete(int id);
+        
         DoorDto GetDoorById(int id);
     }
 }

@@ -248,7 +248,7 @@ function ActiveEdit() {
         document.getElementById("neigh_edit").onclick = function () {
             panel1.close();
             $.ajax({
-                type: "POST",
+                type: "PUT",
                 url: "/Neighborhood/Update",
                 dataType: 'json',
                 data: _data,

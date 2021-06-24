@@ -36,8 +36,9 @@ namespace Basarsoft.DataAccess.Concrete.Base
             _dbSet.Update(entity);
              _context.SaveChanges();
         }
-        public void Delete(T entity)
+        public void Delete(int id)
         {
+            var entity = _dbSet.Find(id);
             _dbSet.Remove(entity);
             _context.SaveChanges();
         }
