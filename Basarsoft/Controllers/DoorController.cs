@@ -83,6 +83,16 @@ namespace Basarsoft.Controllers
              
         }
 
+        [HttpPut]
+
+        public JsonResult Update(int id,string newNo)
+        {
+            var result = _doorManager.GetAll(p => p.Id == id).SingleOrDefault();
+            result.DoorNumber = newNo;
+            _doorManager.Update(result);
+            return Json("");
+        }
+
         [HttpDelete]
 
         public JsonResult Delete(int id)

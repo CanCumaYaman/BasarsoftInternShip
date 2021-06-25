@@ -89,7 +89,7 @@ info.on('drawend', function (e) {
                        
                         if (_type == 'Door') {
 
-                            content = 'Door Number: <input id="yeni_no" type="text"  value=" ' + resp.info.doorNumber + ' "/></br>Neighborhood Name: <input id="info_neigh" type="text"  value=" ' + resp.info.neighborhoodName + ' "/><br></br>Neighborhood Code: <span id="neigh_num"></span><br><br>X: <span id="door_x"></span><br>Y: <span id="door_y"></span></br><button class="btn btn-info" id="update_door" style="margin-right:5px;margin-top:10px;">Save Changes</button><button class="btn btn-danger" id="delete_door" style="margin-top:10px;">Delete</button>';
+                            content = 'Door Number: <input id="new_no" type="text"  value=" ' + resp.info.doorNumber + ' "/></br>Neighborhood Name: <input id="info_neigh" type="text"  value=" ' + resp.info.neighborhoodName + ' "/><br></br>Neighborhood Code: <span id="neigh_num"></span><br><br>X: <span id="door_x"></span><br>Y: <span id="door_y"></span></br><button class="btn btn-info" id="update_door" style="margin-right:5px;margin-top:10px;">Save Changes</button><button class="btn btn-danger" id="delete_door" style="margin-top:10px;">Delete</button>';
 
                             
                         }
@@ -112,7 +112,13 @@ info.on('drawend', function (e) {
                         $("#neigh_num").text(resp.info.neighborhoodNumber);
                         $("#door_x").text(resp.info.x);
                         $("#door_y").text(resp.info.y);
-                       
+
+                        var newNo;
+                        $("#new_no").change(function () {
+                            newNo = $("#new_no").val();
+                        });
+
+
                         $("#delete_door").click(function () {
                             $.ajax({
                                 type: "DELETE",
@@ -124,6 +130,29 @@ info.on('drawend', function (e) {
                                 success: function (response) {
 
                                     toastr.success('Successfully deleted');
+                                    setTimeout(function () {
+                                        location.reload();
+                                    }, 2000);
+
+                                },
+                                error: function () {
+                                    toastr.error('Something went wrong while deleting');
+                                }
+                            });
+                        });
+
+                        $("#update_door").click(function () {
+                            $.ajax({
+                                type: "PUT",
+                                url: "/Door/Update",
+                                dataType: 'json',
+                                data: {
+                                    id: _id,
+                                    newNo:newNo
+                                },
+                                success: function (response) {
+
+                                    toastr.success('Successfully updated');
                                     setTimeout(function () {
                                         location.reload();
                                     }, 2000);
