@@ -174,7 +174,7 @@ function GetDoorDto() {
 
                 for (var i = 0; i < response.info.length; i++) {
 
-                    $("#mytable tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber + "</td><td><button onclick='filter(this.value)' value=" + response.info[i].id + " class='btn btn-success fkir'>Show</button></td></tr>");
+                    $("#doorInfo tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber + "</td><td><button onclick='filter(this.value)' value=" + response.info[i].id + " class='btn btn-success fkir'>Show</button></td></tr>");
                    
                 }
                 
@@ -184,6 +184,13 @@ function GetDoorDto() {
         }
 
     });
+}
+function togglePanel() {
+    if ($("#searchPanel").css("display") == "none") {
+        $("#searchPanel").css("display", "block");
+    } else if ($("#searchPanel").css("display") == "block"){
+        $("#searchPanel").css("display", "none");
+    }
 }
 function filter(val) {
     var _data = {
@@ -211,37 +218,25 @@ function filter(val) {
 }
 
 
-function Filter() {
-   
-    toastr.options = {
-        "debug": false,
-        "positionClass": "toast-top-center",
-        "onclick": null,
-        "fadeIn": 300,
-        "fadeOut": 1000,
-        "timeOut": 5000,
-        "extendedTimeOut": 1000
-    }
-     $.ajax({
-        type: 'GET',
-        url: '/Door/Filter', 
-        data: _data,
-         success: function (response) {
-             if (response == null) {
-                 toastr.error("Door not found");
-             } else {
-                 map.setView(new ol.View({
-                     projection: 'EPSG:3857',
-                     center: [response.x, response.y],
-                     zoom: 18
-                 }));
-             }
-             
-            
-        }
+function filteredResult() {
 
-    });
-   
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("doorInfo");
+    tr = table.getElementsByTagName("tr");
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
 }
 
 
