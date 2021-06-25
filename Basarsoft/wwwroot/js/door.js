@@ -159,21 +159,23 @@ function ListAllPoints() {
 
     });
 };
-var sonuc = "fsadfaf111111111";
+
+var filteredDoor;
 function GetDoorDto() {
    
     $.ajax({
         type: "GET",
         url: "/Door/GetAllDoorDto",
         dataType: 'json',
-        success: function (response) {
+        success:async function (response) {
             if (response == null) {
                 toastr.error("Not found");
             } else {
 
                 for (var i = 0; i < response.info.length; i++) {
-                    
-                    $("#mytable tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber +"</td><td><button class='btn btn-success'>Show</button></td></tr>");
+
+                    $("#mytable tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber + "</td><td><button onclick='filter(this.value)' value=" + response.info[i].id + " class='btn btn-success fkir'>Show</button></td></tr>");
+                   
                 }
                 
 
@@ -183,23 +185,34 @@ function GetDoorDto() {
 
     });
 }
-var filteredNeigh;
-var filteredDoor;
-$('#door_list').on('change', function () {
-    var value = $(this).val();
-    filteredDoor = value;
+function filter(val) {
+    var _data = {
+        id: val
+    }
+    $.ajax({
+        type: 'GET',
+        url: '/Door/Filter',
+        data: _data,
+        success: function (response) {
+            if (response == null) {
+                toastr.error("Door not found");
+            } else {
+                map.setView(new ol.View({
+                    projection: 'EPSG:3857',
+                    center: [response.x, response.y],
+                    zoom: 18
+                }));
+            }
 
-})
-$('#neigh_list').on('change', function () {
-    var value = $(this).val();
-    filteredNeigh = value;
-})
+
+        }
+
+    });
+}
+
 
 function Filter() {
-    var _data = {
-        neighborhoodCode: filteredNeigh,
-        doorNumber:filteredDoor
-    }
+   
     toastr.options = {
         "debug": false,
         "positionClass": "toast-top-center",

@@ -36,9 +36,9 @@ namespace Basarsoft.Controllers
 
         [HttpGet]
 
-        public JsonResult Filter(int neighborhoodCode,int doorNumber )
+        public JsonResult Filter(int id)
         {
-            var _coords = _doorManager.GetAll(p => p.Id == doorNumber && p.NeighborhoodNumber == neighborhoodCode).SingleOrDefault();
+            var _coords = _doorManager.GetAll(p => p.Id ==id).SingleOrDefault();
 
             return Json(_coords);
         }
