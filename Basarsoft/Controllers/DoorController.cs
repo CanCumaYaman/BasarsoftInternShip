@@ -58,7 +58,15 @@ namespace Basarsoft.Controllers
             return Json("");
         }
 
-        [HttpPost]
+        [HttpGet]
+
+        public JsonResult GetAllDoorDto()
+        {
+            var result = _doorManager.GetDoorDto();
+            return Json(new { info = result });
+        }
+
+        [HttpGet]
 
         public JsonResult GetInfo(int id,string type)
         {
@@ -83,6 +91,7 @@ namespace Basarsoft.Controllers
              
         }
 
+
         [HttpPut]
 
         public JsonResult Update(int id,string newNo)
@@ -101,6 +110,7 @@ namespace Basarsoft.Controllers
             
             return Json(new { info = "" });
         }
+
 
 
     }

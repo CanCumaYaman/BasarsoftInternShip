@@ -16,5 +16,6 @@ namespace Basarsoft.Business.Abstract
         void Delete(int id);
         
         DoorDto GetDoorById(int id);
+        List<FilteredDoorDto>  GetDoorDto();
     }
 }

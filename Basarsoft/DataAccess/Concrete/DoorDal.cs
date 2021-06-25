@@ -35,5 +35,19 @@ namespace Basarsoft.DataAccess.Concrete
             return result.FirstOrDefault();
 
         }
+
+        public List<FilteredDoorDto> GetDoorDto()
+        {
+            var result = from door in _context.Doors
+                         join neigh in _context.Neighborhoods
+                         on door.NeighborhoodNumber equals neigh.NeighborhoodCode
+                         select new FilteredDoorDto
+                         {
+                             Id = door.Id,
+                             DoorNumber = door.DoorNumber,
+                             NeighborhoodName = neigh.NeighborhoodName
+                         };
+            return result.ToList();
+        }
     }
 }

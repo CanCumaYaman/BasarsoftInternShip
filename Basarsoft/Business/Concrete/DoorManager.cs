@@ -24,6 +24,10 @@ namespace Basarsoft.Business.Concrete
             return _doorDal.GetAll(filter);
         }
 
+        public List<FilteredDoorDto> GetDoorDto()
+        {
+            return _doorDal.GetDoorDto();
+        }
         public DoorDto GetDoorById(int id)
         {
             return _doorDal.GetDoorById(id);
@@ -44,6 +48,6 @@ namespace Basarsoft.Business.Concrete
              _doorDal.Update(entity);
         }
 
-      
+        
     }
 }

@@ -1,6 +1,8 @@
 ﻿$(window).on('load', function () {
+    GetDoorDto();
     ListAllPoints();
     ListAllPolygons();
+   
 });
 var raster = new ol.layer.Tile({
     preload: Infinity,
@@ -77,7 +79,7 @@ info.on('drawend', function (e) {
                 
                 $.ajax({
                     url: '/Door/GetInfo',
-                    type: 'POST',
+                    type: 'GET',
                     dataType: 'json',
                     data: {
                         type: _type,

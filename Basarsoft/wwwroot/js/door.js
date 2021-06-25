@@ -117,14 +117,14 @@ function ListAllPoints() {
                         value: id,
                         text: name
                     }));
+              
                 var feature = new ol.Feature({ 
                     name: "Door",
-
                     geometry: geo,
                     isDoor: true
 
                 });
-                feature.add
+               
 
                 feature.setId(id);
 
@@ -159,6 +159,30 @@ function ListAllPoints() {
 
     });
 };
+var sonuc = "fsadfaf111111111";
+function GetDoorDto() {
+   
+    $.ajax({
+        type: "GET",
+        url: "/Door/GetAllDoorDto",
+        dataType: 'json',
+        success: function (response) {
+            if (response == null) {
+                toastr.error("Not found");
+            } else {
+
+                for (var i = 0; i < response.info.length; i++) {
+                    
+                    $("#mytable tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber +"</td><td><button class='btn btn-success'>Show</button></td></tr>");
+                }
+                
+
+                
+            }
+        }
+
+    });
+}
 var filteredNeigh;
 var filteredDoor;
 $('#door_list').on('change', function () {

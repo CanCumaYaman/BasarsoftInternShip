@@ -56,8 +56,8 @@
         </select>
         <input class="form-control mr-2 mb-2 mt-2" type="button" value="Undo" id="undo">
     </form>
-        -->
-  
+
+
     <select class="form-select mb-2" id="neigh_list" aria-label="Default select example" style="width:250px;">
         <option selected>Select Neighborhood</option>
 
@@ -66,7 +66,20 @@
         <option selected>Select door number</option>
 
     </select>
-    <button class="btn btn-success mt-2" onclick="Filter();">Filter</button>
+        -->
+    <table class="table table-striped w-50 mb-5"  id="mytable">
+        <thead>
+            <tr>
+                <th>Neighborhood Name</th>
+                <th>Door Number</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+    
     <script src="~/js/jspanel.js"></script>
     <script src="~/js/map.js"></script>
     <script src="~/js/door.js"></script>

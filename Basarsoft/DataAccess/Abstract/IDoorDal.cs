@@ -10,5 +10,6 @@ namespace Basarsoft.DataAccess.Abstract
    public  interface IDoorDal:IGenericRepository<Door>
     {
         DoorDto GetDoorById(int id);
+       List<FilteredDoorDto>  GetDoorDto();
     }
 }
