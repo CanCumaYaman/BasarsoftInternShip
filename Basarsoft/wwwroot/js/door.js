@@ -192,6 +192,7 @@ function togglePanel() {
         $("#searchPanel").css("display", "none");
     }
 }
+
 function filter(val) {
     var _data = {
         id: val
@@ -216,7 +217,6 @@ function filter(val) {
 
     });
 }
-
 
 function filteredResult() {
 
