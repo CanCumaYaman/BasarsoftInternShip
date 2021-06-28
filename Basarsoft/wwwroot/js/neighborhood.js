@@ -186,9 +186,10 @@ function ListAllPolygons() {
     });
 }
 
-function ActiveEdit() {
-
+function EditNeighborhood() {
+ 
     var select = new ol.interaction.Select({
+        layers: [neigh_layer],
         multi:true,
         condition: ol.events.condition.click,
         toggleCondition: ol.events.condition.shiftKeyOnly,  

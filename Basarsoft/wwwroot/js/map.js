@@ -64,7 +64,7 @@ addInfoInteraction();
 info.on('drawend', function (e) {
    
     map.on("click", function (event) {
-        console.log(e);
+        
         info.setActive(false);
 
         map.forEachFeatureAtPixel(event.pixel, function (feature, layer)  {

@@ -101,6 +101,17 @@ namespace Basarsoft.Controllers
             _doorManager.Update(result);
             return Json("");
         }
+        [HttpPut]
+
+        public JsonResult UpdateCoord(double x,double y, int id)
+        {
+            var updateDoor = _doorManager.GetAll(p => p.Id == id).SingleOrDefault();
+            updateDoor.x = x;
+            updateDoor.y = y;
+            _doorManager.Update(updateDoor);
+            return Json("");
+
+        }
 
         [HttpDelete]
 

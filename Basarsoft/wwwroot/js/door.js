@@ -21,7 +21,7 @@ door.on('drawend',async function (e) {
     var neighResult;
     var neighId;
     var neighCode;
-   
+    console.log(e);
    await  map.on("click", function (event) {
         map.forEachFeatureAtPixel(event.pixel, function (feature, layer) {
 
@@ -177,9 +177,7 @@ function GetDoorDto() {
                     $("#doorInfo tbody").append("<tr><td>" + response.info[i].neighborhoodName + "</td><td>" + response.info[i].doorNumber + "</td><td><button onclick='filter(this.value)' value=" + response.info[i].id + " class='btn btn-success fkir'>Show</button></td></tr>");
                    
                 }
-                
-
-                
+                 
             }
         }
 
@@ -239,6 +237,69 @@ function filteredResult() {
     }
 
     
+}
+
+function EditDoor() {
+
+    var select = new ol.interaction.Select({
+        layers: [door_layer],
+      
+    });
+
+    var modify = new ol.interaction.Modify({
+        features: select.getFeatures()
+    });
+    map.addInteraction(select);
+    map.addInteraction(modify);
+
+
+    modify.on('modifyend', function (e) {
+        var newCoordinates = e.features.getArray()[0].values_.geometry.flatCoordinates
+        
+        var doorId = e.features.getArray()[0].getId();
+        
+        var _data = {
+            x: newCoordinates[0].toString().replace('.', ','),
+            y: newCoordinates[1].toString().replace('.', ','),
+            id:doorId
+        }
+
+        var panel1 = jsPanel.create({
+            id: "door_edit_panel",
+            theme: 'success',
+            headerTitle: 'Door Edit',
+            position: 'center-top 0 58',
+            contentSize: '370 150',
+
+            content: '<div class="text-center"><h5>Do you want to save changes?</h5><button style="height:40px;width:60px;" id="door_edit" class="btn btn-success">Yes</button><button style="height:40px;width:60px;margin-left:10px;" id="neigh_edit_cancel" class="btn btn-danger">No</button></div>',
+            callback: function () {
+                this.content.style.padding = '20px';
+            }
+        });
+      
+        document.getElementById("door_edit").onclick = function () {
+            panel1.close();
+            $.ajax({
+                type: "PUT",
+                url: "/Door/UpdateCoord",
+                dataType: 'json',
+                data: _data,
+                success: function (response) {
+
+                    toastr.success('Successfully updated');
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+
+                },
+                error: function () {
+                    toastr.success('Something went wrong while updating');
+                }
+            });
+        }
+
+    });
+
 }
 
 
