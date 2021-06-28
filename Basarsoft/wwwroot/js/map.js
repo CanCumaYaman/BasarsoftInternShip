@@ -245,6 +245,15 @@ info.on('drawend', function (e) {
     });
 })
 
+function GetEditItem() {
+    var selectedItem = $("#neigh_list  option:selected").html();
+    if (selectedItem == "Edit Neighborhood") {
+        EditNeighborhood();
+    } else if (selectedItem == "Edit Door") {
+        EditDoor();
+    }
+}
+
 
 
 
