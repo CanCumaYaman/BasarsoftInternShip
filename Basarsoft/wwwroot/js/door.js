@@ -68,7 +68,7 @@ door.on('drawend',async function (e) {
         var _data = {
             x: coords[0].toString().replace('.', ','),
             y: coords[1].toString().replace('.', ','),
-            no: no,
+            doorNumber: no,
             neighborhoodNumber:neighId
         };
       
@@ -101,7 +101,7 @@ function ListAllPoints() {
 
     $.ajax({
         type: "GET",
-        url: "/Door/List",
+        url: "/Door/GetAll",
         dataType: 'json',
         success: function (response) {
 

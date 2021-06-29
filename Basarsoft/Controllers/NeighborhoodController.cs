@@ -24,22 +24,16 @@ namespace Basarsoft.Controllers
 
         [HttpGet]
 
-        public JsonResult List()
+        public JsonResult GetAll()
         {
             var _coords = _neighborhoodManager.GetAll();
             return Json(_coords);
         }
 
         [HttpPost]
-        public JsonResult SaveNeighborhood(Neighborhood neighborhood, string result, string no)
+        public JsonResult SaveNeighborhood(Neighborhood neighborhood)
         {
-            if (ModelState.IsValid)
-            {
-                neighborhood.Coordinates =result;
-                neighborhood.NeighborhoodName = no;
-                _neighborhoodManager.Add(neighborhood);
-
-            }
+            _neighborhoodManager.Add(neighborhood);
             return Json("");
         }
 

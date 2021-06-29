@@ -28,7 +28,7 @@ namespace Basarsoft.Controllers
 
         [HttpGet]
 
-        public JsonResult List()
+        public JsonResult GetAll()
         {
             var _coords = _doorManager.GetAll();
             return Json(_coords);
@@ -44,17 +44,9 @@ namespace Basarsoft.Controllers
         }
 
         [HttpPost]
-        public JsonResult SavePoint(Door door, double x, double y, string no,int neighborhoodNumber)
+        public JsonResult SavePoint(Door door)
         {
-            if (ModelState.IsValid)
-            {
-                door.x = x;
-                door.y = y;
-                door.DoorNumber = no;
-                door.NeighborhoodNumber = neighborhoodNumber;
-                _doorManager.Add(door);
-                
-            }
+            _doorManager.Add(door);
             return Json("");
         }
 
@@ -68,12 +60,9 @@ namespace Basarsoft.Controllers
 
         [HttpGet]
 
-        public JsonResult GetInfo(int id,string type)
+        public JsonResult GetInfo(int id)
         {
 
-            if (type == "Door")
-            {
-                
                 var result = _doorManager.GetDoorById(id);
                 if (result == null)
                 {
@@ -83,12 +72,7 @@ namespace Basarsoft.Controllers
                 {
                     return Json(new { info = result });
                 }
-
-               }
-
-
-            return Json(new { info = "" });
-             
+   
         }
 
 

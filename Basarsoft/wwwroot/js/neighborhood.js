@@ -42,7 +42,7 @@ add_neigh.on('drawend', function (e) {
         headerTitle: 'Add Neighborhood',
         position: 'center-top 0 58',
         contentSize: '300 250',
-        content: 'Center X: <span id="neigh_x"></span><br>Center Y: <span id="neigh_y"></span>   Neighborhood Name: <input id="neigh_no" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
+        content: 'Center X: <span id="neigh_x"></span><br>Center Y: <span id="neigh_y"></span>   Neighborhood Name: <input id="neigh_name" type="text"/><br><br><br><button style="height:40px;width:60px" id="neigh_add" class="btn btn-success">Add</button>',
         callback: function () {
             this.content.style.padding = '20px';
         }
@@ -51,9 +51,9 @@ add_neigh.on('drawend', function (e) {
     $("#neigh_y").text(center[1]);
     document.getElementById('neigh_add').onclick = function () {
        
-        var _no = $('#neigh_no').val();
+        var neighName = $('#neigh_name').val();
 
-        if (_no.length < 1) {
+        if (neighName.length < 1) {
 
             alert("Please enter neighborhood name");
 
@@ -75,8 +75,8 @@ add_neigh.on('drawend', function (e) {
         }
 
         var _data = {
-            result: result,
-            no: _no
+            coordinates: result,
+            neighborhoodName: neighName
         };
         $.ajax({
             type: "POST",
@@ -105,7 +105,7 @@ add_neigh.on('drawend', function (e) {
 function ListAllPolygons() {
     $.ajax({
         type: "GET",
-        url: "/Neighborhood/List",
+        url: "/Neighborhood/GetAll",
         dataType: 'json',
         success: function (response) {
 
