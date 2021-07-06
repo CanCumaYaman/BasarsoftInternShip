@@ -17,7 +17,21 @@ function ActiveDoor() {
 
 addDoorInteraction();
 
-door.on('drawend',async function (e) {
+door.on('drawend', async function (e) {
+    if (map.getView().getZoom() < 3.2) {
+        jsPanel.create({
+            id: "door_add_error",
+            theme: 'danger',
+            headerTitle: 'Door Add Error',
+            position: 'center-top 0 58',
+            contentSize: '320 100',
+            content: 'You cannot add door in this zoom',
+            callback: function () {
+                this.content.style.padding = '20px';
+            }
+        });
+    } else {
+
     var neighResult;
     var neighId;
     var neighCode;
@@ -94,6 +108,7 @@ door.on('drawend',async function (e) {
                 return onbeforeclose();
             },
         });
+        }
     }
 });
 
